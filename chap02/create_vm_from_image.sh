@@ -7,6 +7,9 @@ sed -i "s,<name>win7</name>,<name>win7.spice</name>,g" win7.spice
 UUID=`uuidgen`
 sed -i "s,<uuid>.*</uuid>,<uuid>$UUID</uuid>,g" win7.spice
 
+machine=`qemu-system-x86_64 -M ? | grep default | awk '{print $1}'`
+sed -i "s,pc-1.0,$machine,g" win7.spice
+
 begin_line=`grep -n "disk.*cdrom" win7 | awk '{print $1}' | head -1`
 begin_line=${begin_line%:*}
 end_line=`grep -n "/disk" win7 | awk '{print $1}' | tail -1`
