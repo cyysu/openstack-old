@@ -85,9 +85,8 @@ EOF
 IP=`ls -al | wc -l`
 sed -i "s,%IP%,$IP,g" $file
 sed -i "s,127.0.1.1.*,127.0.1.1    $HOST_NAME,g"  $temp_file/etc/hosts
-sed -i "/exit/d" $temp_file/etc/rc.local
-echo "exit 0" >> $temp_file/etc/rc.local
-echo "$HOST_NAME" > $temp_file/etc/hostname
+
+
 #----------------------------------------------
 umount $temp_file
 qemu-nbd -d /dev/nbd${dev_number}
