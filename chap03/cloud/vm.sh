@@ -8,7 +8,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 if [[ $# -gt 1 ]]; then
-    echo "There must be just one parameters: such as /root/res nova-api"
+    echo "There must be just one parameters: such as ./vm.sh keystone"
     exit 0
 fi
 
