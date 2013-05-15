@@ -1,0 +1,81 @@
+function set_password {
+    set +o xtrace
+    var=$1;
+    pw=${!var}
+    localrc=$TOP_DIR/localrc
+    if [ ! $pw ]; then
+        if [ ! -e $localrc ]; then
+            touch $localrc
+        fi
+        pw=`openssl rand -hex 10`
+        eval "$var=$pw"
+        echo "$var=$pw" >> $localrc
+    fi
+    set -o xtrace
+}
+
+function mysql_cmd() {
+    set +o xtrace
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD -h$MYSQL_HOST -e "$@"
+    set -o xtrace
+}
+
+function source_install() {
+    cd $DEST/$1
+    [[ -d .git ]] && git checkout master
+    python setup.py build
+    python setup.py develop
+}
+
+function add_line() {
+    local file_content=$2
+    local add_content=$3
+    local init_file=$1
+    local line_number=`grep -n "$file_content" $init_file`
+    local line_number=${line_number%%:*}
+    for n in $line_number
+    do
+        sed -i "${n} a$add_content"  $init_file
+    done
+}
+
+function get_id () {
+    export SERVICE_TOKEN=$ADMIN_TOKEN
+    export SERVICE_ENDPOINT=http://$KEYSTONE_HOST:35357/v2.0
+    echo `"$@" | awk '/ id / { print $4 }'`
+}
+
+function get_tenant {
+    set +o xtrace
+    var=$1;
+    pw=${!var}
+    export SERVICE_TOKEN=$ADMIN_TOKEN
+    export SERVICE_ENDPOINT=http://$KEYSTONE_HOST:35357/v2.0
+    echo $SERVICE_TOKEN
+    pw=`keystone tenant-list | grep $2 | awk '{print $2}'`
+    eval "$var=$pw"
+    set -o xtrace
+}
+
+function get_role {
+    set +o xtrace
+    var=$1;
+    pw=${!var}
+    export SERVICE_TOKEN=$ADMIN_TOKEN
+    export SERVICE_ENDPOINT=http://$KEYSTONE_HOST:35357/v2.0
+    pw=`keystone role-list | grep $2 | awk '{print $2}'`
+    eval "$var=$pw"
+    set -o xtrace
+}
+
+function setup_iptables() {
+
+    sed -i "/exit/d" /etc/rc.local
+    sed -i "/iptable/d" /etc/rc.local
+
+    for n in 3306 5672 5000 35357 9191 9292 8773 8774 8775 8776 5900:6400 3260 9696 6080 80; do
+        echo "iptables -I INPUT 1 -p tcp --dport $n -j ACCEPT" >> /etc/rc.local
+    done
+    echo "exit 0" >> /etc/rc.local
+}
+
