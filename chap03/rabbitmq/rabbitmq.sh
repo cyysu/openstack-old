@@ -2,20 +2,23 @@
 
 set -e
 set +o xtrace
+
 #---------------------------------------------
-# Set variable
+# Set up Env.
 #---------------------------------------------
 
-TOP_DIR=$(cd $(dirname "$0") && pwd)
-TEMP=`mktemp`;
-rm -rfv $TEMP >/dev/null
-mkdir -p $TEMP;
-source $TOP_DIR/localrc
+TOPDIR=$(cd $(dirname "$0") && pwd)
+source $TOPDIR/localrc
+source $TOPDIR/tools/function
+TEMP=`mktemp`; rm -rfv $TEMP >/dev/null; mkdir -p $TEMP;
+
 #---------------------------------------------
 # source localrc
 #---------------------------------------------
-apt-get install -y rabbitmq-server
 
+set_password RABBITMQ_PASSWORD
+
+apt-get install -y rabbitmq-server
 rabbitmqctl change_password guest $RABBITMQ_PASSWORD
 
 set -o xtrace
