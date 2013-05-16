@@ -233,12 +233,14 @@ echo $TOKEN
 # Generate Keystone RC
 #---------------------------------------------------
 
-cat <<EOF > /tmp/keyrc
+cat <<EOF > ~/keyrc
 export OS_TENANT_NAME=$ADMIN_USER
 export OS_USERNAME=$ADMIN_USER
 export OS_PASSWORD=$ADMIN_PASSWORD
 export OS_AUTH_URL="http://$KEYSTONE_HOST:5000/v2.0/"
 EOF
+
+
 
 rm -rf /tmp/tmp*
 
