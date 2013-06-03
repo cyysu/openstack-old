@@ -1,0 +1,26 @@
+Metadata-Version: 1.1
+Name: python-glanceclient
+Version: 0.9.0
+Summary: Client library for OpenStack Image API
+Home-page: https://github.com/openstack/python-glanceclient
+Author: OpenStack Glance Contributors
+Author-email: glance@example.com
+License: Apache
+Description: Python bindings to the OpenStack Images API
+        =============================================
+        
+        This is a client library for Glance built on the OpenStack Images API. It provides a Python API (the ``glanceclient`` module) and a command-line tool (``glance``). This library fully supports the v1 Images API, while support for the v2 API is in progress.
+        
+        Development takes place via the usual OpenStack processes as outlined in the `OpenStack wiki <http://wiki.openstack.org/HowToContribute>`_.  The master repository is on `GitHub <http://github.com/openstack/python-glanceclient>`_.
+        
+        See release notes and more at `<http://docs.openstack.org/developer/python-glanceclient/>`_.
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python

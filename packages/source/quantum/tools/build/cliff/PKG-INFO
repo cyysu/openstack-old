@@ -1,0 +1,36 @@
+Metadata-Version: 1.1
+Name: cliff
+Version: 1.3.3
+Summary: Command Line Interface Formulation Framework
+Home-page: https://github.com/dreamhost/cliff
+Author: Doug Hellmann
+Author-email: doug.hellmann@gmail.com
+License: UNKNOWN
+Download-URL: https://github.com/dreamhost/cliff/tarball/master
+Description: =======================================================
+         cliff -- Command Line Interface Formulation Framework
+        =======================================================
+        
+        .. image:: https://secure.travis-ci.org/dhellmann/cliff.png?branch=master
+        
+        cliff is a framework for building command line programs. It uses
+        setuptools entry points to provide subcommands, output formatters, and
+        other extensions.
+        
+        Documentation
+        =============
+        
+        Documentation for cliff is hosted on readthedocs.org at http://readthedocs.org/docs/cliff/en/latest/
+        
+Platform: Any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.2
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Intended Audience :: Developers
+Classifier: Environment :: Console
+Provides: cliff

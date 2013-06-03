@@ -1,0 +1,39 @@
+Metadata-Version: 1.1
+Name: python-swiftclient
+Version: 1.4.0
+Summary: Client Library for OpenStack Object Storage API
+Home-page: https://github.com/openstack/python-swiftclient
+Author: OpenStack, LLC.
+Author-email: openstack-admins@lists.launchpad.net
+License: Apache License (2.0)
+Description: Python bindings to the OpenStack Object Storage API
+        ===================================================
+        
+        This is a python client for the Swift API. There's a Python API (the
+        ``swiftclient`` module), and a command-line script (``swift``).
+        
+        Development takes place via the usual OpenStack processes as outlined
+        in the `OpenStack wiki`__.  The master repository is on GitHub__.
+        
+        __ http://wiki.openstack.org/HowToContribute
+        __ http://github.com/openstack/python-swiftclient
+        
+        This code is based on original the client previously included with
+        `OpenStack's swift`__ The python-swiftclient is licensed under the
+        Apache License like the rest of OpenStack.
+        
+        __ http://github.com/openstack/swift
+        
+        .. contents:: Contents:
+           :local:
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Environment :: No Input/Output (Daemon)

@@ -1,0 +1,14 @@
+Metadata-Version: 1.1
+Name: oslo.config
+Version: 1.1.0
+Summary: Oslo configuration API
+Home-page: http://www.openstack.org/
+Author: OpenStack
+Author-email: openstack-dev@lists.openstack.org
+License: Apache Software License
+Description: The Oslo configuration API supports parsing command line arguments and .ini style configuration files.
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 2.6

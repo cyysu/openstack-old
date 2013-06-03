@@ -1,0 +1,11 @@
+CHANGELOG
+COPYING
+MANIFEST.in
+README
+prettytable.py
+prettytable_test.py
+setup.cfg
+pip-egg-info/prettytable.egg-info/PKG-INFO
+pip-egg-info/prettytable.egg-info/SOURCES.txt
+pip-egg-info/prettytable.egg-info/dependency_links.txt
+pip-egg-info/prettytable.egg-info/top_level.txt

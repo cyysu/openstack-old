@@ -1,0 +1,18 @@
+Metadata-Version: 1.1
+Name: python-quantumclient
+Version: 2.2.1
+Summary: CLI and python client library for OpenStack Quantum
+Home-page: https://launchpad.net/quantum
+Author: OpenStack Quantum Project
+Author-email: openstack-dev@lists.launchpad.net
+License: Apache License 2.0
+Description: CLI and python client library for OpenStack Quantum
+Platform: UNKNOWN
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7

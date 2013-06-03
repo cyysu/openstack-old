@@ -1,0 +1,15 @@
+MANIFEST.in
+README.md
+requirements.txt
+setup.cfg
+setup.py
+pip-egg-info/warlock.egg-info/PKG-INFO
+pip-egg-info/warlock.egg-info/SOURCES.txt
+pip-egg-info/warlock.egg-info/dependency_links.txt
+pip-egg-info/warlock.egg-info/requires.txt
+pip-egg-info/warlock.egg-info/top_level.txt
+test/test_core.py
+warlock/__init__.py
+warlock/core.py
+warlock/exceptions.py
+warlock/model.py

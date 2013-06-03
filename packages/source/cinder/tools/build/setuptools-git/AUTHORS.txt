@@ -1,0 +1,19 @@
+Stefan H. Holek <stefan@epy.co.at>
+  Support for Python 3.3
+  Support for OS X and Windows
+
+Chris McDonough <chrism@plope.com>
+  Support for non-ASCII filenames
+
+Wichert Akkerman <wichert@wiggy.net>
+  Handle in-git symlinks, small code cleanups
+  Current maintainer
+
+Vinay Sajip <vinay_sajip@yahoo.co.uk>:
+  Python 3 support
+
+Humberto Diogenes <humberto@digi.com.br>:
+  Modernization and portability
+
+Yannick Gingras <ygingras@ygingras.net>:
+  Original implementation

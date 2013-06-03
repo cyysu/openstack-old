@@ -1,0 +1,11 @@
+README.rst
+setup.cfg
+pip-egg-info/setuptools_git.egg-info/PKG-INFO
+pip-egg-info/setuptools_git.egg-info/SOURCES.txt
+pip-egg-info/setuptools_git.egg-info/dependency_links.txt
+pip-egg-info/setuptools_git.egg-info/entry_points.txt
+pip-egg-info/setuptools_git.egg-info/top_level.txt
+pip-egg-info/setuptools_git.egg-info/zip-safe
+setuptools_git/__init__.py
+setuptools_git/tests.py
+setuptools_git/utils.py
