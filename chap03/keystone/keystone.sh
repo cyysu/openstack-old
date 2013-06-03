@@ -92,9 +92,9 @@ if [[ ! -d $DEST/keystone ]]; then
         prettytable simplejson \
         requests oslo.config python-keystoneclient
     do
-        ls $TOPDIR/pip/keystone > $TEMP/ret
+        ls $TOPDIR/pip/ > $TEMP/ret
         dep_file=`cat $TEMP/ret | grep -i "$dep"`
-        old_path=`pwd`; cd $TOPDIR/pip/keystone/
+        old_path=`pwd`; cd $TOPDIR/pip/
         pip install ./$dep_file
         cd $old_path
     done
