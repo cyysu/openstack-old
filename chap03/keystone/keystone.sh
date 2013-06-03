@@ -81,7 +81,7 @@ ln -s /usr/include/libxml2/libxml /usr/include/libxml
 #---------------------------------------------------
 
 [[ ! -d $DEST ]] && mkdir -p $DEST
-#if [[ ! -d $DEST/keystone ]]; then
+if [[ ! -d $DEST/keystone ]]; then
     cp -rf $TOPDIR/openstacksource/keystone $DEST
 
     # Install dep-packages
@@ -100,7 +100,7 @@ ln -s /usr/include/libxml2/libxml /usr/include/libxml
     done
 
     source_install keystone
-#fi
+fi
 
 mkdir -p /etc/keystone
 cp -rf $DEST/keystone/etc/* /etc/keystone/
@@ -137,7 +137,6 @@ cp -rf $KEYSTONE_CONF_DIR/keystone.conf.sample $file
 sed -i "s,# admin_token = ADMIN,admin_token = $ADMIN_TOKEN,g" $file
 sed -i "s,# connection = sqlite:///keystone.db,connection = $BASE_SQL_CONN/keystone?charset=utf8,g" $file
 sed -i "s,# driver = keystone.catalog.backends.sql.Catalog,driver = keystone.catalog.backends.sql.Catalog,g" $file
-#sed -i "s,# driver = keystone.contrib.ec2.backends.sql.Ec2,driver = keystone.contrib.ec2.backends.sql.Ec2,g" $file
 sed -i "s,#token_format = PKI,token_format = UUID,g" $file
 sed -i "s,# driver = keystone.contrib.ec2.backends.kvs.Ec2,driver = keystone.contrib.ec2.backends.sql.Ec2,g" $file
 
@@ -151,7 +150,7 @@ cp $KEYSTONE_DIR/etc/logging.conf.sample $file
 sed -i "s,level=WARNING,level=DEBUG,g" $file
 sed -i "s/handlers=file/handlers=devel,production/g" $file
 
-[[ -d /var/log/nova ]] && rm -rf /var/log/nova
+[[ -d /var/log/nova ]] && rm -rf /var/log/nova/keytone*
 mkdir -p /var/log/nova
 logfile=/var/log/nova/keystone.log
 
@@ -193,30 +192,16 @@ fi
 # Init the databases and endpoints.
 #---------------------------------------------------
 
-cat <<"EOF" > /tmp/keyrc
-export OS_USERNAME=""
-export OS_AUTH_KEY=""
-export OS_AUTH_TENANT=""
-export OS_STRATEGY=""
-export OS_AUTH_STRATEGY=""
-export OS_AUTH_URL=""
-export SERVICE_ENDPOINT=""
-EOF
-echo "export SERVICE_TOKEN=$ADMIN_TOKEN" >> /tmp/keyrc
-echo "export ADMIN_PASSWORD=$ADMIN_PASSWORD" >> /tmp/keyrc
-echo "export KEYSTONE_HOST=$KEYSTONE_HOST" >> /tmp/keyrc
-echo "export SERVICE_ENDPOINT=$SERVICE_ENDPOINT" >> /tmp/keyrc
+cp -rf $TOPDIR/tools/keystone_data.sh /tmp/
+sed -i "s,%KEYSTONE_HOST%,$KEYSTONE_HOST,g" /tmp/keystone_data.sh
+sed -i "s,%SERVICE_TOKEN%,$SERVICE_TOKEN,g" /tmp/keystone_data.sh
+sed -i "s,%ADMIN_PASSWORD%,$ADMIN_PASSWORD,g" /tmp/keystone_data.sh
+sed -i "s,%SERVICE_TENANT_NAME%,$SERVICE_TENANT_NAME,g" /tmp/keystone_data.sh
+sed -i "s,%KEYSTONE_CATALOG_BACKEND%,$KEYSTONE_CATALOG_BACKEND,g" /tmp/keystone_data.sh
+sed -i "s,%SERVICE_ENDPOINT%,$SERVICE_ENDPOINT,g" /tmp/keystone_data.sh
 
-
-echo "#!/bin/bash" > /tmp/temp_run.sh
-echo "source /tmp/keyrc" >> /tmp/temp_run.sh
-echo "cp -rf $TOPDIR/tools/keystone_data.sh /tmp/" >> /tmp/temp_run.sh
-echo "/tmp/keystone_data.sh" >> /tmp/temp_run.sh
-
-chmod +x /tmp/temp_run.sh
-/tmp/temp_run.sh
-rm -rf /tmp/keyrc
-rm -rf /tmp/temp_run.sh
+chmod +x /tmp/keystone_data.sh
+/tmp/keystone_data.sh
 rm -rf /tmp/keystone_data.sh
 
 #---------------------------------------------------
@@ -241,6 +226,22 @@ export OS_AUTH_URL="http://$KEYSTONE_HOST:5000/v2.0/"
 EOF
 
 
+#---------------------------------------------------
+# Create service control script
+#---------------------------------------------------
+
+cp -rf $TOPDIR/tools/keystone /etc/init.d/
+temp_file=/etc/init.d/keystone
+
+sed -i "s,%ADMIN_USER%,$ADMIN_USER,g" $temp_file
+sed -i "s,%ADMIN_TOKEN%,$ADMIN_TOKEN,g" $temp_file
+sed -i "s,%ADMIN_PASSWORD%,$ADMIN_PASSWORD,g" $temp_file
+sed -i "s,%KEYSTONE_HOST%,$KEYSTONE_HOST,g" $temp_file
+sed -i "s,%SERVICE_ENDPOINT%,$SERVICE_ENDPOINT,g" $temp_file
+sed -i "s,%logfile%,$logfile,g" $temp_file
+sed -i "s,%KEYSTONE_DIR%,$KEYSTONE_DIR,g" $temp_file
+
+chmod +x /etc/init.d/keystone
 
 rm -rf /tmp/tmp*
 
