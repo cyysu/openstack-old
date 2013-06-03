@@ -1,0 +1,4 @@
+export OS_TENANT_NAME=service
+export OS_USERNAME=glance
+export OS_PASSWORD=keystone_glance_password
+export OS_AUTH_URL="http://10.239.82.105:5000/v2.0/"

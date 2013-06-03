@@ -1,0 +1,4 @@
+export OS_TENANT_NAME=service
+export OS_USERNAME=quantum
+export OS_PASSWORD=keystone_quantum_password
+export OS_AUTH_URL="http://10.239.82.105:5000/v2.0/"
