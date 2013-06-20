@@ -9,6 +9,10 @@
     <boot dev='hd'/>
     <bootmenu enable='yes'/>
   </os>
+  <cpu match='exact'>
+   <model>core2duo</model>
+   <feature policy='require' name='vmx'/>
+  </cpu>
   <features>
     <acpi/>
     <apic/>
@@ -26,6 +30,15 @@
       <target dev='vda' bus='virtio'/>
       <alias name='virtio-disk0'/>
     </disk>
+
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw' cache='none'/>
+      <source file='%RAW_DISK_PATH%'/>
+      <target dev='vdb' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
+    </disk>
+
+
     <controller type='ide' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
     </controller>
@@ -40,12 +53,23 @@
     </interface>
 
     <interface type='network'>
-      <mac address='%MAC2%'/>
+      <mac address='%MAC2%'/> <!-- 192.168.222.%IP1% -->
       <source network='default'/>
       <target dev='vnet1'/>
       <alias name='net1'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
     </interface>
+
+    <interface type='network'>
+      <mac address='%MAC3%'/> <!-- 192.168.111.%IP2% -->
+      <source network='default'/>
+      <target dev='vnet2'/>
+      <alias name='net2'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
+    </interface>
+
+
+
     <serial type='pty'>
       <target port='0'/>
     </serial>
@@ -69,3 +93,4 @@
     </memballoon>
   </devices>
 </domain>
+
