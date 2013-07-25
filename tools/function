@@ -21,10 +21,12 @@ function mysql_cmd() {
 }
 
 function source_install() {
+    olddir=`pwd`
     cd $DEST/$1
     [[ -d .git ]] && git checkout master
     python setup.py build
     python setup.py develop
+    cd $olddir
 }
 
 function add_line() {
@@ -73,9 +75,62 @@ function setup_iptables() {
     sed -i "/exit/d" /etc/rc.local
     sed -i "/iptable/d" /etc/rc.local
 
-    for n in 3306 5672 5000 35357 9191 9292 8773 8774 8775 8776 5900:6400 3260 9696 6080 80; do
+    for n in 3306 5672 5000 35357 9191 9292 8773 8774 8775 8776 27017 5900:6400 3260 9696 6080 80; do
         echo "iptables -I INPUT 1 -p tcp --dport $n -j ACCEPT" >> /etc/rc.local
     done
+    chmod +x /etc/rc.local
     echo "exit 0" >> /etc/rc.local
 }
 
+function install_package() {
+    [[ ! -d $DEST ]] && mkdir -p $DEST
+    [[ ! -d $DEST/$1 ]] && cp -rf $TOPDIR/openstacksource/$1 $DEST/
+    olddir=`pwd`
+    cd $DEST/$1/$2
+    pip install -r $3 -i http://$PIP_HOST/pip
+    cd $olddir
+}
+
+function install_keystone() {
+    install_package keystone ./tools/ pip-requires
+    source_install keystone
+}
+
+function install_glance() {
+    install_package glance ./tools/ pip-requires
+    source_install glance
+}
+
+function install_swift() {
+    install_package swift ./tools/ pip-requires
+    source_install swift
+}
+
+function install_swift3() {
+    source_install swift3
+}
+
+function install_cinder() {
+    install_package cinder ./tools/ pip-requires
+    source_install cinder
+}
+
+function install_quantum() {
+    install_package quantum ./tools/ pip-requires
+    source_install quantum
+}
+
+function install_nova() {
+    install_package nova ./tools/ pip-requires
+    source_install nova
+}
+
+function install_dashboard() {
+    install_package horizon ./tools/ pip-requires
+    source_install horizon
+}
+
+function install_ceilometer() {
+    install_package ceilometer ./ requirements.txt
+    source_install ceilometer    
+}

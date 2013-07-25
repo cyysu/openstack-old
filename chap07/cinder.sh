@@ -13,11 +13,9 @@ DEST=/opt/stack/
 
 
 
-###########################################################
-#
+#---------------------------------------------------
 #  Your Configurations.
-#
-###########################################################
+#---------------------------------------------------
 
 BASE_SQL_CONN=mysql://$MYSQL_CINDER_USER:$MYSQL_CINDER_PASSWORD@$MYSQL_HOST
 
@@ -83,24 +81,7 @@ service ssh restart
 [[ ! -d $DEST ]] && mkdir -p $DEST
 if [[ ! -d $DEST/cinder ]]; then
     [[ ! -d $DEST/cinder ]] && cp -rf $TOPDIR/openstacksource/cinder $DEST/
-    for dep in  amqp anyjson eventlet kombu lockfile \
-		repoze.lru Routes WebOb greenlet \
-		PasteDeploy Paste stevedore \
-		suds paramiko Babel prettytable\
-		iso8601 setuptools-git simplejson \
-		oslo.config pycrypto PrettyTable jsonschema\
-		jsonpointer jsonpatch warlock \
-		python-keystoneclient \
-		python-swiftclient python-glanceclient
-    do
-        ls $TOPDIR/pip/cinder > $TEMP/ret
-        dep_file=`cat $TEMP/ret | grep -i "$dep"`
-        old_path=`pwd`; cd $TOPDIR/pip/cinder
-        pip install ./$dep_file
-        cd $old_path
-    done
-
-    source_install cinder
+    install_cinder
 fi
 
 
@@ -226,16 +207,15 @@ cinder-manage db sync
 ############################################################
 
 
-cat <<"EOF" > /root/start.sh
+cat <<"EOF" > /root/cinder.sh
 #!/bin/bash
-mkdir -p /var/log/nova
-python /opt/stack/cinder/bin/cinder-api --config-file /etc/cinder/cinder.conf >/var/log/nova/cinder-api.log 2>&1 &
-python /opt/stack/cinder/bin/cinder-scheduler --config-file /etc/cinder/cinder.conf>/var/log/nova/cinder-scheduler.log 2>&1 &
+mkdir -p /var/log/cinder
+python /opt/stack/cinder/bin/cinder-api --config-file /etc/cinder/cinder.conf >/var/log/cinder/cinder-api.log 2>&1 &
+python /opt/stack/cinder/bin/cinder-scheduler --config-file /etc/cinder/cinder.conf>/var/log/cinder/cinder-scheduler.log 2>&1 &
 EOF
 
-chmod +x /root/start.sh
-/root/start.sh
-cp -rf /root/start.sh /root/cind.start.sh
+chmod +x /root/cinder.sh
+/root/cinder.sh
 rm -rf /tmp/pip*
 rm -rf /tmp/tmp*
 
