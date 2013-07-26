@@ -85,61 +85,6 @@ if [[ ! -d $DEST/cinder ]]; then
 fi
 
 
-#---------------------------------------------------
-# Create User in Keystone
-#---------------------------------------------------
-
-export SERVICE_TOKEN=$ADMIN_TOKEN
-export SERVICE_ENDPOINT=http://$KEYSTONE_HOST:35357/v2.0
-
-get_tenant SERVICE_TENANT service
-get_role ADMIN_ROLE admin
-
-
-if [[ `keystone user-list | grep cinder | wc -l` -eq 0 ]]; then
-CINDER_USER=$(get_id keystone user-create --name=cinder \
-                                          --pass="$KEYSTONE_CINDER_SERVICE_PASSWORD" \
-                                          --tenant_id $SERVICE_TENANT \
-                                          --email=cinder@example.com)
-keystone user-role-add --tenant_id $SERVICE_TENANT \
-                       --user_id $CINDER_USER \
-                       --role_id $ADMIN_ROLE
-CINDER_SERVICE=$(get_id keystone service-create \
-    --name=cinder \
-    --type=volume \
-    --description="Cinder Service")
-keystone endpoint-create \
-    --region RegionOne \
-    --service_id $CINDER_SERVICE \
-    --publicurl "http://$CINDER_HOST:8776/v1/\$(tenant_id)s" \
-    --adminurl "http://$CINDER_HOST:8776/v1/\$(tenant_id)s" \
-    --internalurl "http://$CINDER_HOST:8776/v1/\$(tenant_id)s"
-fi
-
-
-unset SERVICE_TOKEN
-unset SERVICE_ENDPOINT
-
-#---------------------------------------------------
-# Create glance user in Mysql
-#---------------------------------------------------
-
-# create user
-cnt=`mysql_cmd "select * from mysql.user;" | grep $MYSQL_CINDER_USER | wc -l`
-if [[ $cnt -eq 0 ]]; then
-    mysql_cmd "create user '$MYSQL_CINDER_USER'@'%' identified by '$MYSQL_CINDER_PASSWORD';"
-    mysql_cmd "flush privileges;"
-fi
-
-# create database
-cnt=`mysql_cmd "show databases;" | grep cinder | wc -l`
-if [[ $cnt -eq 0 ]]; then
-    mysql_cmd "create database cinder CHARACTER SET utf8;"
-    mysql_cmd "grant all privileges on cinder.* to '$MYSQL_CINDER_USER'@'%' identified by '$MYSQL_CINDER_PASSWORD';"
-    mysql_cmd "grant all privileges on cinder.* to 'root'@'%' identified by '$MYSQL_ROOT_PASSWORD';"
-    mysql_cmd "flush privileges;"
-fi
-
 #################################################
 #
 # Change configuration file.
@@ -191,16 +136,6 @@ echo "include /etc/tgt/conf.d/cinder.conf" >> $file
 echo "include /opt/stack/data/cinder/volumes/*" >> $file
 cp -rf /etc/cinder/cinder.conf /etc/tgt/conf.d/
 
-###########################################################
-#
-# SYNC the DataBase.
-#
-############################################################
-
-
-cinder-manage db sync
-
-
 ############################################################
 # Create the volume storage.
 ############################################################
@@ -218,8 +153,7 @@ vgcreate cinder-volumes $VOLUME_DISK
 cat <<"EOF" > /root/cinder.sh
 #!/bin/bash
 mkdir -p /var/log/cinder
-python /opt/stack/cinder/bin/cinder-api --config-file /etc/cinder/cinder.conf >/var/log/cinder/cinder-api.log 2>&1 &
-python /opt/stack/cinder/bin/cinder-scheduler --config-file /etc/cinder/cinder.conf>/var/log/cinder/cinder-scheduler.log 2>&1 &
+python /opt/stack/cinder/bin/cinder-volume --config-file /etc/cinder/cinder.conf>/var/log/cinder/cinder-volume.log 2>&1 &
 EOF
 
 chmod +x /root/cinder.sh
