@@ -200,10 +200,18 @@ cp -rf /etc/cinder/cinder.conf /etc/tgt/conf.d/
 
 cinder-manage db sync
 
+
 ############################################################
-#
-# Create a script to kill all the services with the name.
-#
+# Create the volume storage.
+############################################################
+
+
+pvcreate -ff $VOLUME_DISK
+vgcreate cinder-volumes $VOLUME_DISK
+
+
+############################################################
+# Start up the services.
 ############################################################
 
 

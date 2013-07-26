@@ -1,7 +1,3 @@
-#---------------------------------------------
-# Set up Env.
-#---------------------------------------------
-
 
 #---------------------------------------------
 # Python pip Sources
@@ -38,10 +34,12 @@ ADMIN_USER=admin
 SERVICE_TENANT_NAME=service
 
 #---------------------------------------------
-# Swift Service
+# Cinder Service
 #---------------------------------------------
 
-SWIFT_HOST=192.168.111.16
-SWIFT_NODE_IP=192.168.111.18
-KEYSTONE_SWIFT_SERVICE_PASSWORD=keystone_swift_password
-
+CINDER_HOST=192.168.111.10
+MYSQL_CINDER_USER=cinder
+MYSQL_CINDER_PASSWORD=cinder_password
+KEYSTONE_CINDER_SERVICE_PASSWORD=keystone_cinder_password
+VOLUME_GROUP=cinder-volumes
+VOLUME_DISK=/dev/vdb
