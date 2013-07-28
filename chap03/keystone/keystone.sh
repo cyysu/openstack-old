@@ -58,7 +58,11 @@ DEBIAN_FRONTEND=noninteractive \
 apt-get --option \
 "Dpkg::Options::=--force-confold" --assume-yes \
 install -y --force-yes mysql-client
+
+
+chmod +x /usr/bin/nkill
 nkill keystone
+
 [[ -d $DEST/keystone/etc ]] && cp -rf $TOPDIR/openstacksource/keystone/etc/* $DEST/keystone/etc/
 mysql_cmd "DROP DATABASE IF EXISTS keystone;"
 
@@ -81,26 +85,7 @@ ln -s /usr/include/libxml2/libxml /usr/include/libxml
 #---------------------------------------------------
 
 [[ ! -d $DEST ]] && mkdir -p $DEST
-if [[ ! -d $DEST/keystone ]]; then
-    cp -rf $TOPDIR/openstacksource/keystone $DEST
-
-    # Install dep-packages
-    for dep in WebOb greenlet eventlet \
-        PasteDeploy paste repoze.lru routes \
-        decorator Tempita sqlalchemy sqlalchemy-migrate \
-        passlib lxml iso8601 \
-        prettytable simplejson \
-        requests oslo.config python-keystoneclient
-    do
-        ls $TOPDIR/pip/ > $TEMP/ret
-        dep_file=`cat $TEMP/ret | grep -i "$dep"`
-        old_path=`pwd`; cd $TOPDIR/pip/
-        pip install ./$dep_file
-        cd $old_path
-    done
-
-    source_install keystone
-fi
+install_keystone
 
 mkdir -p /etc/keystone
 cp -rf $DEST/keystone/etc/* /etc/keystone/
@@ -120,11 +105,14 @@ fi
 cnt=`mysql_cmd "show databases;" | grep keystone | wc -l`
 if [[ $cnt -eq 0 ]]; then
     mysql_cmd "create database keystone CHARACTER SET utf8;"
-    mysql_cmd "grant all privileges on keystone.* to '$MYSQL_KEYSTONE_USER'@'%' identified by '$MYSQL_KEYSTONE_PASSWORD';"
-    mysql_cmd "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' identified by '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;"
-    mysql_cmd "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' identified by '$MYSQL_ROOT_PASSWORD'  WITH GRANT OPTION; FLUSH PRIVILEGES;"
-    mysql_cmd "flush privileges;"
 fi
+mysql_cmd "use mysql; delete from user where user=''; flush privileges;"
+mysql_cmd "grant all privileges on keystone.* to '$MYSQL_KEYSTONE_USER'@'%' identified by '$MYSQL_KEYSTONE_PASSWORD';"
+mysql_cmd "grant all privileges on keystone.* to '$MYSQL_KEYSTONE_USER'@'%' identified by '$MYSQL_KEYSTONE_PASSWORD';"
+mysql_cmd "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' identified by '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;"
+mysql_cmd "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' identified by '$MYSQL_ROOT_PASSWORD'  WITH GRANT OPTION; FLUSH PRIVILEGES;"
+mysql_cmd "flush privileges;"
+
 
 #---------------------------------------------------
 # Change keystone.conf

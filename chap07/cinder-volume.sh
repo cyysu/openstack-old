@@ -46,9 +46,8 @@ apt-get --option \
 "Dpkg::Options::=--force-confold" --assume-yes \
 install -y --force-yes mysql-client
 
-nkill cinder
+nkill cinder-volume
 [[ -d $DEST/cinder ]] && cp -rf $TOPDIR/openstacksource/cinder/etc/cinder/* $DEST/cinder/etc/cinder/
-mysql_cmd "DROP DATABASE IF EXISTS cinder;"
 
 ############################################################
 #
@@ -77,12 +76,8 @@ service ssh restart
 #---------------------------------------------------
 
 [[ ! -d $DEST ]] && mkdir -p $DEST
-if [[ ! -d $DEST/cinder ]]; then
-    [[ ! -d $DEST/cinder ]] && cp -rf $TOPDIR/openstacksource/cinder $DEST/
-    [[ ! -d $DEST/keystone ]] && cp -rf $TOPDIR/openstacksource/keystone $DEST/
-    install_keystone
-    install_cinder
-fi
+install_keystone
+install_cinder
 
 
 #################################################
@@ -150,14 +145,14 @@ vgcreate cinder-volumes $VOLUME_DISK
 ############################################################
 
 
-cat <<"EOF" > /root/cinder.sh
+cat <<"EOF" > /root/cinder-volume.sh
 #!/bin/bash
 mkdir -p /var/log/cinder
 python /opt/stack/cinder/bin/cinder-volume --config-file /etc/cinder/cinder.conf>/var/log/cinder/cinder-volume.log 2>&1 &
 EOF
 
-chmod +x /root/cinder.sh
-/root/cinder.sh
+chmod +x /root/cinder-volume.sh
+/root/cinder-volume.sh
 rm -rf /tmp/pip*
 rm -rf /tmp/tmp*
 

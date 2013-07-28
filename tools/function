@@ -94,16 +94,19 @@ function install_package() {
 function install_keystone() {
     install_package keystone ./tools/ pip-requires
     source_install keystone
+    pip install python-keystoneclient -i http://$PIP_HOST/pip
 }
 
 function install_glance() {
     install_package glance ./tools/ pip-requires
     source_install glance
+    pip install python-glanceclient -i http://$PIP_HOST/pip
 }
 
 function install_swift() {
     install_package swift ./tools/ pip-requires
     source_install swift
+    pip install python-swiftclient -i http://$PIP_HOST/pip
 }
 
 function install_swift3() {
@@ -113,16 +116,19 @@ function install_swift3() {
 function install_cinder() {
     install_package cinder ./tools/ pip-requires
     source_install cinder
+    pip install python-cinderclient -i http://$PIP_HOST/pip
 }
 
 function install_quantum() {
     install_package quantum ./tools/ pip-requires
     source_install quantum
+    pip install python-quantumclient -i http://$PIP_HOST/pip
 }
 
 function install_nova() {
     install_package nova ./tools/ pip-requires
     source_install nova
+    pip install python-novaclient -i http://$PIP_HOST/pip
 }
 
 function install_dashboard() {
@@ -132,5 +138,6 @@ function install_dashboard() {
 
 function install_ceilometer() {
     install_package ceilometer ./ requirements.txt
-    source_install ceilometer    
+    source_install ceilometer 
+    pip install python-ceilometerclient -i http://$PIP_HOST/pip   
 }

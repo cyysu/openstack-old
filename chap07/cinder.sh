@@ -46,7 +46,8 @@ apt-get --option \
 "Dpkg::Options::=--force-confold" --assume-yes \
 install -y --force-yes mysql-client
 
-nkill cinder
+nkill cinder-api
+nkill cinder-scheduler
 [[ -d $DEST/cinder ]] && cp -rf $TOPDIR/openstacksource/cinder/etc/cinder/* $DEST/cinder/etc/cinder/
 mysql_cmd "DROP DATABASE IF EXISTS cinder;"
 
@@ -64,10 +65,8 @@ libxml2-dev libxslt-dev tgt lvm2 \
 unzip python-mysqldb mysql-client memcached openssl expect \
 iputils-arping \
 python-lxml kvm gawk iptables ebtables sqlite3 sudo kvm \
-vlan curl socat python-mox  \
-python-migrate \
-iscsitarget iscsitarget-dkms open-iscsi \
-python-requests
+vlan curl socat python-mox python-migrate \
+iscsitarget iscsitarget-dkms open-iscsi python-requests
 
 
 service ssh restart
@@ -77,13 +76,9 @@ service ssh restart
 #---------------------------------------------------
 
 [[ ! -d $DEST ]] && mkdir -p $DEST
-if [[ ! -d $DEST/cinder ]]; then
-    [[ ! -d $DEST/cinder ]] && cp -rf $TOPDIR/openstacksource/cinder $DEST/
-    [[ ! -d $DEST/keystone ]] && cp -rf $TOPDIR/openstacksource/keystone $DEST/
-    install_keystone
-    install_cinder
-fi
-
+install_keystone
+install_cinder
+pip install python-cinderclient -i http://$PIP_HOST/pip
 
 #---------------------------------------------------
 # Create User in Keystone
@@ -199,13 +194,26 @@ cp -rf /etc/cinder/cinder.conf /etc/tgt/conf.d/
 
 
 cinder-manage db sync
+###########################################################
+#
+# Create Cinder service rc file.
+#
+############################################################
+
+cat <<"EOF">> /root/cinderrc
+export OS_TENANT_NAME=service
+export OS_USERNAME=cinder
+export OS_PASSWORD=%KEYSTONE_CINDER_SERVICE_PASSWORD%
+export OS_AUTH_URL="http://%KEYSTONE_HOST%:5000/v2.0/"
+EOF
+sed -i "s,%KEYSTONE_CINDER_SERVICE_PASSWORD%,$KEYSTONE_CINDER_SERVICE_PASSWORD,g" /root/cinderrc
+sed -i "s,%KEYSTONE_HOST%,$KEYSTONE_HOST,g" /root/cinderrc
 
 ############################################################
 #
-# Create a script to kill all the services with the name.
+# Start services
 #
 ############################################################
-
 
 cat <<"EOF" > /root/cinder.sh
 #!/bin/bash
@@ -213,6 +221,7 @@ mkdir -p /var/log/cinder
 python /opt/stack/cinder/bin/cinder-api --config-file /etc/cinder/cinder.conf >/var/log/cinder/cinder-api.log 2>&1 &
 python /opt/stack/cinder/bin/cinder-scheduler --config-file /etc/cinder/cinder.conf>/var/log/cinder/cinder-scheduler.log 2>&1 &
 EOF
+
 
 chmod +x /root/cinder.sh
 /root/cinder.sh
