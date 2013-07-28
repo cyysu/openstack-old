@@ -192,5 +192,6 @@ for n in `ls /dev/mapper | grep -v control | sort -r`; do
 done
 
 rmmod nbd
-
+virsh define $1/$1
+virsh start $1
 set +o xtrace
