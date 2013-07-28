@@ -121,7 +121,6 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet dhcp
-    gateway 10.239.82.1
 
 auto eth1
 iface eth1 inet static
