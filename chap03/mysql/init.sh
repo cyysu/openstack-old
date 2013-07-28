@@ -10,7 +10,6 @@ source $TOP_DIR/tools/function
 #---------------------------------------------
 # Check for apt.
 #---------------------------------------------
-apt-get update
 DEBIAN_FRONTEND=noninteractive \
 apt-get --option \
 "Dpkg::Options::=--force-confold" --assume-yes \
