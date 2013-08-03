@@ -130,6 +130,7 @@ fi
 cnt=`mysql_cmd "show databases;" | grep cinder | wc -l`
 if [[ $cnt -eq 0 ]]; then
     mysql_cmd "create database cinder CHARACTER SET utf8;"
+    mysql_cmd "use mysql; delete from user where user=''; flush privileges;"
     mysql_cmd "grant all privileges on cinder.* to '$MYSQL_CINDER_USER'@'%' identified by '$MYSQL_CINDER_PASSWORD';"
     mysql_cmd "grant all privileges on cinder.* to 'root'@'%' identified by '$MYSQL_ROOT_PASSWORD';"
     mysql_cmd "flush privileges;"
