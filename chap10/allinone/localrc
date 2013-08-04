@@ -81,3 +81,11 @@ MYSQL_NOVA_PASSWORD=nova_password
 KEYSTONE_NOVA_SERVICE_PASSWORD=keystone_nova_password
 LIBVIRT_TYPE=kvm
 
+#---------------------------------------------
+# Dashboard Service
+#---------------------------------------------
+
+DASHBOARD_HOST=s-allinone
+MYSQL_DASHBOARD_USER=dashboard
+MYSQL_DASHBOARD_PASSWORD=dashboard_password
+
