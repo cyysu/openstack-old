@@ -41,3 +41,13 @@ SWIFT_HOST=s-allinone
 SWIFT_NODE_IP=127.0.0.1
 KEYSTONE_SWIFT_SERVICE_PASSWORD=keystone_swift_password
 SWIFT_DISK_PATH=/dev/vdb
+
+#---------------------------------------------
+# Glance Service
+#---------------------------------------------
+
+GLANCE_HOST=s-allinone
+MYSQL_GLANCE_USER=glance
+MYSQL_GLANCE_PASSWORD=glance_password
+KEYSTONE_GLANCE_SERVICE_PASSWORD=keystone_glance_password
+

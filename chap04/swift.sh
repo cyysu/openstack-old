@@ -235,15 +235,19 @@ swift-ring-builder account.builder rebalance
 
 mkdir -p /var/log/swift
 chown -R swift /var/log/swift
-cat <<"EOF" > /root/start.sh
+
+cat <<"EOF" > /root/swift-proxy.sh
 #!/bin/bash
 cd /opt/stack/swift
+nkill swift-proxy
 nohup ./bin/swift-proxy-server /etc/swift/proxy-server.conf -v > /var/log/swift/swift.log 2>&1 &
-
 EOF
 
-chmod +x /root/start.sh
-/root/start.sh
+chmod +x /root/swift-proxy.sh
+/root/swift-proxy.sh
 
+cp -rf $TOPDIR/tools/swiftrc /root/
+sed -i "s,%KEYSTONE_HOST%,$KEYSTONE_HOST,g" /root/swiftrc
 rm -rf /tmp/pip*; rm -rf /tmp/tmp*
+
 set +o xtrace
