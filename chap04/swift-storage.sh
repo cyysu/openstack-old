@@ -297,6 +297,11 @@ set -e
 set +o xtrace
 cd /opt/stack/swift/bin
 
+nkill swift-account
+nkill swift-container
+nkill swift-object
+
+
 # Account
 nohup ./swift-account-auditor /etc/swift/account-server.conf -v >/var/log/swift/account-auditor.log 2>&1 &
 nohup ./swift-account-server /etc/swift/account-server.conf -v >/var/log/swift/account-server.log 2>&1 &
