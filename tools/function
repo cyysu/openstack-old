@@ -110,6 +110,8 @@ function install_swift() {
 }
 
 function install_swift3() {
+    [[ ! -d $DEST ]] && mkdir -p $DEST
+    [[ ! -d $DEST/swift3 ]] && cp -rf $TOPDIR/openstacksource/swift3 $DEST/
     source_install swift3
 }
 
@@ -138,6 +140,8 @@ function install_dashboard() {
 
 function install_ceilometer() {
     install_package ceilometer ./ requirements.txt
+    sed -i "/hooks/d" $DEST/ceilometer/setup.cfg
+    sed -i "/global/d" $DEST/ceilometer/setup.cfg
     source_install ceilometer 
     pip install python-ceilometerclient -i http://$PIP_HOST/pip   
 }

@@ -47,10 +47,11 @@ DEBIAN_FRONTEND=noninteractive \
 apt-get --option \
 "Dpkg::Options::=--force-confold" --assume-yes \
 install -y --force-yes mysql-client
-nkill swift-proxy-server
-[[ -d /etc/swift ]] && rm -rf /etc/swift/*
-[[ -d $DEST/swift ]] && cp -rf $TOPDIR/openstacksource/swift/etc/* $DEST/swift/etc/
-mysql_cmd "DROP DATABASE IF EXISTS swift;"
+
+nkill swift-account
+nkill swift-container
+nkill swift-object
+
 
 ############################################################
 #
@@ -77,90 +78,10 @@ ln -s /usr/include/libxml2/libxml /usr/include/libxml
 #---------------------------------------------------
 
 [[ ! -d $DEST ]] && mkdir -p $DEST
-if [[ ! -d $DEST/swift ]]; then
-    [[ ! -d $DEST/swift ]] && cp -rf $TOPDIR/openstacksource/swift $DEST/
-    [[ ! -d $DEST/swift3 ]] && cp -rf $TOPDIR/openstacksource/swift3 $DEST/
-    [[ ! -d $DEST/keystone ]] && cp -rf $TOPDIR/openstacksource/keystone $DEST/
-
-
-    for dep in WebOb greenlet eventlet \
-        PasteDeploy paste repoze.lru routes \
-        decorator Tempita sqlalchemy sqlalchemy-migrate \
-        passlib lxml iso8601 \
-        prettytable simplejson \
-        requests oslo.config python-keystoneclient
-    do
-        ls $TOPDIR/pip/keystone > $TEMP/ret
-        dep_file=`cat $TEMP/ret | grep -i "$dep"`
-        old_path=`pwd`; cd $TOPDIR/pip/keystone/
-        pip install ./$dep_file
-        cd $old_path
-    done
-
-    for dep in greenlet eventlet PasteDeploy \
-               xattr netifaces simplejson \
-               oslo.config python-keystoneclient \
-               python-swiftclient
-    do
-        ls $TOPDIR/pip/swift > $TEMP/ret
-        dep_file=`cat $TEMP/ret | grep -i "$dep"`
-        old_path=`pwd`; cd $TOPDIR/pip/swift
-        pip install ./$dep_file
-        cd $old_path
-    done
-
-    source_install swift
-    source_install swift3
-    source_install keystone
-fi
-#---------------------------------------------------
-# Create User in Swift
-#---------------------------------------------------
-
-export SERVICE_TOKEN=$ADMIN_TOKEN
-export SERVICE_ENDPOINT=http://$KEYSTONE_HOST:35357/v2.0
-
-get_tenant SERVICE_TENANT service
-get_role ADMIN_ROLE admin
-
-
-if [[ `keystone user-list | grep swift | wc -l` -eq 0 ]]; then
-SWIFT_USER=$(get_id keystone user-create \
-    --name=swift \
-    --pass="$KEYSTONE_SWIFT_SERVICE_PASSWORD" \
-    --tenant_id $SERVICE_TENANT \
-    --email=swift@example.com)
-keystone user-role-add \
-    --tenant_id $SERVICE_TENANT \
-    --user_id $SWIFT_USER \
-    --role_id $ADMIN_ROLE
-SWIFT_SERVICE=$(get_id keystone service-create \
-    --name=swift \
-    --type="object-store" \
-    --description="Swift Service")
-keystone endpoint-create \
-    --region RegionOne \
-    --service_id $SWIFT_SERVICE \
-    --publicurl "http://$SWIFT_HOST:8080/v1/AUTH_\$(tenant_id)s" \
-    --adminurl "http://$SWIFT_HOST:8080/v1" \
-    --internalurl "http://$SWIFT_HOST:8080/v1/AUTH_\$(tenant_id)s"
-
-
-S3_SERVICE=$(get_id keystone service-create \
-    --name=s3 \
-    --type=s3 \
-    --description="S3")
-keystone endpoint-create \
-    --region RegionOne \
-    --service_id $S3_SERVICE \
-    --publicurl "http://$SWIFT_HOST:$S3_SERVICE_PORT" \
-    --adminurl "http://$SWIFT_HOST:$S3_SERVICE_PORT" \
-    --internalurl "http://$SWIFT_HOST:$S3_SERVICE_PORT"
-fi
-
-unset SERVICE_TOKEN
-unset SERVICE_ENDPOINT
-
+install_ceilometer
+install_swift
+install_swift3
+install_keystone
 
 #---------------------------------------------------
 # Create glance user in Linux-System
@@ -173,11 +94,9 @@ if [[ `cat /etc/passwd | grep swift | wc -l` -eq 0 ]] ; then
     useradd -g swift swift
 fi
 
-[[ -d /etc/swift ]] && rm -rf /etc/swift/*
 mkdir -p /etc/swift
+scp -pr $SWIFT_HOST:/etc/swift/* /etc/swift/
 chown -R swift:swift /etc/swift
-
-
 
 #---------------------------------------------------
 # Swift Configurations - Sync
@@ -324,7 +243,7 @@ sed -i "s,%STOR_PATH%,$STOR_PATH,g" /etc/swift/object-server.conf
 #---------------------------------------------------
 
 
-DISK_PATH=/dev/vdb
+DISK_PATH=$SWIFT_DISK_PATH
 cat <<"EOF">auto_fdisk.sh
 #!/usr/bin/expect -f
 spawn fdisk %DISK_PATH%
@@ -351,20 +270,17 @@ EOF
 sed -i "s,%DISK_PATH%,$DISK_PATH,g" auto_fdisk.sh
 chmod a+x auto_fdisk.sh
 
+cd $TOPDIR
+./auto_fdisk.sh
+DEV_PATH=`fdisk -l | grep ${DISK_PATH#*dev/*} | grep Linux | awk '{print $1}'`
+mkfs.xfs -f  -i size=1024 $DEV_PATH
+n=${DEV_PATH#*dev/*}
+echo "$DEV_PATH /srv/node/sdb1 xfs noatime,nodiratime,nobarrier,logbufs=8 0 0" >> /etc/fstab
 
-if [[ ! -d /srv/node ]]; then
-    cd $TOPDIR
-    ./auto_fdisk.sh
-    DEV_PATH=`fdisk -l | grep ${DISK_PATH#*dev/*} | grep Linux | awk '{print $1}'`
-    mkfs.xfs -i size=1024 $DEV_PATH
-    n=${DEV_PATH#*dev/*}
-    echo "$DEV_PATH /srv/node/sdb1 xfs noatime,nodiratime,nobarrier,logbufs=8 0 0" >> /etc/fstab
-
-    mkdir -p /srv/node/sdb1
-    mount /srv/node/sdb1
-    chown -R swift:swift /srv/node
-    chmod a+w -R /srv
-fi
+mkdir -p /srv/node/sdb1
+mount /srv/node/sdb1
+chown -R swift:swift /srv/node
+chmod a+w -R /srv
 
 #---------------------------------------------------
 # Build Rings
@@ -372,8 +288,10 @@ fi
 
 mkdir -p /var/log/swift
 chown -R swift /var/log/swift
+mkdir -p /var/cache/swift/
+chown -R swift /var/cache/swift/
 
-cat << "EOF" > start.sh
+cat << "EOF" > /root/swift-storage.sh
 #!/bin/bash
 
 set -e
@@ -404,8 +322,7 @@ nohup ./swift-object-server    /etc/swift/object-server.conf -v >/var/log/swift/
 set -o xtrace
 
 EOF
-cp -rf /root/start.sh /root/swift-storage.sh
 chmod +x /root/swift-storage.sh
-/root/start.sh
+/root/swift-storage.sh
 
 set +o xtrace

@@ -82,43 +82,10 @@ ln -s /usr/include/libxml2/libxml /usr/include/libxml
 # Copy source code to DEST Dir
 #---------------------------------------------------
 
-[[ ! -d $DEST ]] && mkdir -p $DEST
-if [[ ! -d $DEST/swift ]]; then
-    [[ ! -d $DEST/swift ]] && cp -rf $TOPDIR/openstacksource/swift $DEST/
-    [[ ! -d $DEST/swift3 ]] && cp -rf $TOPDIR/openstacksource/swift3 $DEST/
-    [[ ! -d $DEST/keystone ]] && cp -rf $TOPDIR/openstacksource/keystone $DEST/
-
-
-    for dep in WebOb greenlet eventlet \
-        PasteDeploy paste repoze.lru routes \
-        decorator Tempita sqlalchemy sqlalchemy-migrate \
-        passlib lxml iso8601 \
-        prettytable simplejson \
-        requests oslo.config python-keystoneclient
-    do
-        ls $TOPDIR/pip/ > $TEMP/ret
-        dep_file=`cat $TEMP/ret | grep -i "$dep"`
-        old_path=`pwd`; cd $TOPDIR/pip/
-        pip install ./$dep_file
-        cd $old_path
-    done
-
-    for dep in greenlet eventlet PasteDeploy \
-               xattr netifaces simplejson \
-               oslo.config python-keystoneclient \
-               python-swiftclient
-    do
-        ls $TOPDIR/pip/ > $TEMP/ret
-        dep_file=`cat $TEMP/ret | grep -i "$dep"`
-        old_path=`pwd`; cd $TOPDIR/pip/
-        pip install ./$dep_file
-        cd $old_path
-    done
-
-    source_install swift
-    source_install swift3
-    source_install keystone
-fi
+install_ceilometer
+install_keystone
+install_swift
+install_swift3
 
 #---------------------------------------------------
 # Create User in Swift
@@ -192,6 +159,23 @@ cat >/etc/swift/swift.conf <<EOF
 swift_hash_path_suffix = `od -t x8 -N 8 -A n </dev/random`
 EOF
 
+cd /etc/swift
+cat <<"EOF">>auto_ssl.sh
+#!/usr/bin/expect -f
+spawn openssl req -new -x509 -nodes -out cert.crt -keyout cert.key
+expect {
+"Country Name*" { send "CN\r"; exp_continue }
+"State or Province Name*" { send "Shanghai\r"; exp_continue }
+"Locality Name*" {send "Shanghai\r"; exp_continue }
+"Organization Name*" { send "internet\r"; exp_continue }
+"Organizational Unit Name*" { send "cloud.computing\r"; exp_continue }
+"Common Name *" { send "Cloud Computing\r"; exp_continue }
+"Email Address*" { send "cloud@openstack.com\r" }
+}
+expect eof
+EOF
+chmod a+x auto_ssl.sh
+./auto_ssl.sh
 
 sed -i 's/127.0.0.1/0.0.0.0/g' /etc/memcached.conf
 service memcached restart
@@ -218,6 +202,7 @@ sed -i "s,%SERVICE_PASSWORD%,$KEYSTONE_SWIFT_SERVICE_PASSWORD,g" $file
 
 mkdir -p /etc/swift/keystone-signing
 chown -R swift:swift /etc/swift
+chown -R swift:swift /etc/swift/keystone-signing
 mkdir -p /var/log/swift
 chown -R swift:swift /var/log/swift
 
