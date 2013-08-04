@@ -216,7 +216,7 @@ sed -i "s,%KEYSTONE_HOST%,$KEYSTONE_HOST,g" /root/cinderrc
 #
 ############################################################
 
-cat <<"EOF" > /root/cinder.sh
+cat <<"EOF" > /root/cinder-api.sh
 #!/bin/bash
 mkdir -p /var/log/cinder
 python /opt/stack/cinder/bin/cinder-api --config-file /etc/cinder/cinder.conf >/var/log/cinder/cinder-api.log 2>&1 &
@@ -224,8 +224,8 @@ python /opt/stack/cinder/bin/cinder-scheduler --config-file /etc/cinder/cinder.c
 EOF
 
 
-chmod +x /root/cinder.sh
-/root/cinder.sh
+chmod +x /root/cinder-api.sh
+/root/cinder-api.sh
 rm -rf /tmp/pip*
 rm -rf /tmp/tmp*
 

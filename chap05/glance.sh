@@ -1,0 +1,1 @@
+glance-with-swift.sh

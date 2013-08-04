@@ -78,7 +78,6 @@ ln -s /usr/include/libxml2/libxml /usr/include/libxml
 #---------------------------------------------------
 
 [[ ! -d $DEST ]] && mkdir -p $DEST
-install_ceilometer
 install_swift
 install_swift3
 install_keystone

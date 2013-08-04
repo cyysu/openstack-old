@@ -82,7 +82,6 @@ ln -s /usr/include/libxml2/libxml /usr/include/libxml
 # Copy source code to DEST Dir
 #---------------------------------------------------
 
-install_ceilometer
 install_keystone
 install_swift
 install_swift3
@@ -247,6 +246,7 @@ chmod +x /root/swift-proxy.sh
 /root/swift-proxy.sh
 
 cp -rf $TOPDIR/tools/swiftrc /root/
+sed -i "s,%KEYSTONE_SWIFT_SERVICE_PASSWORD%,$KEYSTONE_SWIFT_SERVICE_PASSWORD,g" /root/swiftrc
 sed -i "s,%KEYSTONE_HOST%,$KEYSTONE_HOST,g" /root/swiftrc
 rm -rf /tmp/pip*; rm -rf /tmp/tmp*
 
