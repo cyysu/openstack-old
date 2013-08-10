@@ -7,7 +7,7 @@ TOPDIR=$(cd $(dirname "$0") && pwd)
 TEMP=`mktemp`;
 rm -rfv $TEMP >/dev/null;
 mkdir -p $TEMP;
-source $TOPDIR/localrc
+source $TOPDIR/localrc; cp -rf $TOPDIR/localrc /root/
 source $TOPDIR/tools/function
 DEST=/opt/stack/
 

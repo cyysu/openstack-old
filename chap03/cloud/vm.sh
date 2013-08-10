@@ -22,15 +22,30 @@ uuid=`uuidgen`
 sed -i "s,%UUID%,$uuid,g" $1/$1
 sed -i "s,%VM_NAME%,$1,g" $1/$1
 
-if [[ $# -eq 1 ]]; then
+add_disk=0
+for n in $@; do
+    if [[ "$n"x = "disk"x ]]; then
+        sed -i "s,manual,dhcp,g" $file
+        qemu-img create -f raw $1/ubuntu-raw-disk.raw 30G
+        RAW_DISK_PATH=$TOPDIR/$1/ubuntu-raw-disk.raw
+        sed -i "s,%RAW_DISK_PATH%,$RAW_DISK_PATH,g" $1/$1
+        let "add_disk = $add_disk + 1"
+        break
+    fi
+    if [[ "$n"x = "-disk"x ]]; then
+        sed -i "s,manual,dhcp,g" $file
+        qemu-img create -f raw $1/ubuntu-raw-disk.raw 30G
+        RAW_DISK_PATH=$TOPDIR/$1/ubuntu-raw-disk.raw
+        sed -i "s,%RAW_DISK_PATH%,$RAW_DISK_PATH,g" $1/$1
+        let "add_disk = $add_disk + 1"
+        break
+    fi
+done
+
+if [[ $add_disk -eq 0 ]]; then
     sed -i "34,40d" $1/$1
 fi
 
-if [[ $# -eq 2 ]]; then
-    qemu-img create -f raw $1/ubuntu-raw-disk.raw 30G
-    RAW_DISK_PATH=$TOPDIR/$1/ubuntu-raw-disk.raw
-    sed -i "s,%RAW_DISK_PATH%,$RAW_DISK_PATH,g" $1/$1
-fi
 
 
 machine=`qemu-system-x86_64 -M ? | grep default | awk '{print $1}'`
@@ -115,12 +130,14 @@ export ftp_proxy=$https_proxy
 EOF
 
 file=$temp_file/etc/network/interfaces
+
+
 cat <<"EOF">$file
 auto lo
 iface lo inet loopback
 
 auto eth0
-iface eth0 inet dhcp
+iface eth0 inet %USE_DHCP%
 
 auto eth1
 iface eth1 inet static
@@ -158,6 +175,15 @@ function _get_ip() {
     rm -rf /tmp/ret /tmp/res
 }
 
+sed -i "s,%USE_DHCP%,manual,g" $file
+for n in $@; do
+    if [[ "$n"x = "--dhcp"x ]]; then
+        sed -i "s,manual,dhcp,g" $file
+    fi
+    if [[ "$n"x = "-d"x ]]; then
+        sed -i "s,manual,dhcp,g" $file
+    fi
+done
 
 IP1=`_get_ip 192.168.222`
 sed -i "s,%IP1%,$IP1,g" $file

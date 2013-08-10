@@ -4,9 +4,9 @@ set +o xtrace
 
 
 TOPDIR=$(cd $(dirname "$0") && pwd)
-source $TOPDIR/../localrc
+source /root/localrc
 
-ADMIN_PASSWORD=keystone_glance_password
+ADMIN_PASSWORD=$KEYSTONE_GLANCE_SERVICE_PASSWORD
 ADMIN_USER=glance
 ADMIN_TENANT=service
 KEYSTONE_HOST=$KEYSTONE_HOST
@@ -30,9 +30,6 @@ RAMDISK_ID=$(glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:92
 
 
 glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:9292 image-create --name "${IMAGE_NAME%.img}" --public --container-format ami --disk-format ami ${KERNEL_ID:+--property kernel_id=$KERNEL_ID} ${RAMDISK_ID:+--property ramdisk_id=$RAMDISK_ID} < "${IMAGE_FILE}"
-
-glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:9292 image-create --name "ttylinux.img" --public --container-format ami --disk-format ami  < "${TOPDIR}/ttylinux.img"
-
 
 
 set -o xtrace

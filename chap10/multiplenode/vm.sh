@@ -1,0 +1,1 @@
+../../chap03/cloud/vm.sh
