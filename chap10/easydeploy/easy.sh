@@ -43,11 +43,13 @@ function _add_disk_() {
 add_disk=0
 for n in $@; do
     if [[ "$n"x = "disk"x ]]; then
-        _add_disk_
+        _add_disk_ $1
+        let "add_disk = $add_disk + 1"
         break
     fi
     if [[ "$n"x = "-disk"x ]]; then
-        _add_disk_
+        _add_disk_ $1
+        let "add_disk = $add_disk + 1"
         break
     fi
 done

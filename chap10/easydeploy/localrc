@@ -3,7 +3,7 @@
 # Python pip Sources
 #---------------------------------------------
 
-PIP_HOST=192.169.111.27
+PIP_HOST=192.168.111.4
 
 #---------------------------------------------
 # MySQL Service
@@ -38,7 +38,7 @@ SERVICE_TENANT_NAME=service
 #---------------------------------------------
 
 SWIFT_HOST=192.168.111.27
-SWIFT_NODE_IP={192.168.111.9,192.168.111.10,192.168.111.11},{192.168.111.13,192.168.111.14,192.168.111.15}
+SWIFT_NODE_IP={192.168.111.28,192.168.111.29,192.168.111.30}
 KEYSTONE_SWIFT_SERVICE_PASSWORD=keystone_swift_password
 SWIFT_DISK_PATH=/dev/vdb
 SWIFT_NODE_NIC_CARD=eth2
@@ -55,18 +55,18 @@ KEYSTONE_GLANCE_SERVICE_PASSWORD=keystone_glance_password
 # Cinder Service
 #---------------------------------------------
 
-CINDER_HOST=192.168.111.17
+CINDER_HOST=192.168.111.27
 MYSQL_CINDER_USER=cinder
 MYSQL_CINDER_PASSWORD=cinder_password
 KEYSTONE_CINDER_SERVICE_PASSWORD=keystone_cinder_password
 VOLUME_GROUP=cinder-volumes
-VOLUME_DISK=/dev/vdb
+VOLUME_DISK=/dev/vdc
 
 #---------------------------------------------
 # Cinder Service
 #---------------------------------------------
 
-QUANTUM_HOST=192.168.111.21
+QUANTUM_HOST=192.168.111.27
 MYSQL_QUANTUM_USER=quantum
 MYSQL_QUANTUM_PASSWORD=quantum_password
 KEYSTONE_QUANTUM_SERVICE_PASSWORD=keystone_quantum_password
@@ -75,7 +75,7 @@ KEYSTONE_QUANTUM_SERVICE_PASSWORD=keystone_quantum_password
 # Nova Service
 #---------------------------------------------
 
-NOVA_HOST=192.168.111.22
+NOVA_HOST=192.168.111.27
 MYSQL_NOVA_USER=nova
 MYSQL_NOVA_PASSWORD=nova_password
 KEYSTONE_NOVA_SERVICE_PASSWORD=keystone_nova_password
@@ -85,7 +85,7 @@ NOVA_COMPUTE_NIC_CARD=eth2
 # Dashboard Service
 #---------------------------------------------
 
-DASHBOARD_HOST=192.168.111.26
+DASHBOARD_HOST=192.168.111.27
 MYSQL_DASHBOARD_USER=dashboard
 MYSQL_DASHBOARD_PASSWORD=dashboard_password
 
