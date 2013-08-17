@@ -87,7 +87,7 @@ function install_package() {
     [[ ! -d $DEST/$1 ]] && cp -rf $TOPDIR/openstacksource/$1 $DEST/
     olddir=`pwd`
     cd $DEST/$1/$2
-    pip install -r $3 -i http://$PIP_HOST/pip --download-cache=/tmp/
+    pip install -r $3 -i http://$PIP_HOST/pip
     cd $olddir
 }
 
@@ -145,4 +145,9 @@ function install_ceilometer() {
     sed -i "/global/d" $DEST/ceilometer/setup.cfg
     source_install ceilometer 
     pip install python-ceilometerclient -i http://$PIP_HOST/pip   
+}
+
+function nic_ip() {
+    info=`ifconfig $1 | grep "inet addr" | awk '{print $2}'`
+    echo ${info##*:}
 }

@@ -31,5 +31,6 @@ RAMDISK_ID=$(glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:92
 
 glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:9292 image-create --name "${IMAGE_NAME%.img}" --public --container-format ami --disk-format ami ${KERNEL_ID:+--property kernel_id=$KERNEL_ID} ${RAMDISK_ID:+--property ramdisk_id=$RAMDISK_ID} < "${IMAGE_FILE}"
 
+glance image-update --property hw_disk_bus=ide `glance index | grep "cirros.img" | awk '{print $1}'`
 
 set -o xtrace

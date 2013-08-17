@@ -134,7 +134,6 @@ fi
 
 # create database
 cnt=`mysql_cmd "show databases;" | grep quantum | wc -l`
-mysql -uroot -p$MYSQL_ROOT_PASSWORD  -e "use mysql; delete from user where user=''; flush privileges;"
 if [[ $cnt -eq 0 ]]; then
     mysql_cmd "create database quantum CHARACTER SET utf8;"
     mysql_cmd "grant all privileges on quantum.* to '$MYSQL_QUANTUM_USER'@'%' identified by '$MYSQL_QUANTUM_PASSWORD';"

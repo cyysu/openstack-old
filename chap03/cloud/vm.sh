@@ -25,7 +25,6 @@ sed -i "s,%VM_NAME%,$1,g" $1/$1
 add_disk=0
 for n in $@; do
     if [[ "$n"x = "disk"x ]]; then
-        sed -i "s,manual,dhcp,g" $file
         qemu-img create -f raw $1/ubuntu-raw-disk.raw 30G
         RAW_DISK_PATH=$TOPDIR/$1/ubuntu-raw-disk.raw
         sed -i "s,%RAW_DISK_PATH%,$RAW_DISK_PATH,g" $1/$1
@@ -33,7 +32,6 @@ for n in $@; do
         break
     fi
     if [[ "$n"x = "-disk"x ]]; then
-        sed -i "s,manual,dhcp,g" $file
         qemu-img create -f raw $1/ubuntu-raw-disk.raw 30G
         RAW_DISK_PATH=$TOPDIR/$1/ubuntu-raw-disk.raw
         sed -i "s,%RAW_DISK_PATH%,$RAW_DISK_PATH,g" $1/$1

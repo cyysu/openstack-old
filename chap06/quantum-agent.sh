@@ -63,6 +63,7 @@ install_quantum
 #
 #################################################
 
+mkdir -p /etc/quantum/
 scp -pr $QUANTUM_HOST:/etc/quantum/* /etc/quantum/
 
 ############################################################

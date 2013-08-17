@@ -17,13 +17,7 @@ DEST=/opt/stack/
 #
 ###########################################################
 
-HOST_IP=$1
-if [[ $# -eq 0 ]]; then
-    echo "Error: You should put your IP address."
-    echo "Use: ./nova-compute.sh HOST_IP"
-    exit
-fi
-
+HOST_IP=`nic_ip $NOVA_COMPUTE_NIC_CARD`
 
 DEBIAN_FRONTEND=noninteractive \
 apt-get --option \

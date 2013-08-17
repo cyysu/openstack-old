@@ -215,9 +215,19 @@ swift-ring-builder object.builder create 18 3 1
 swift-ring-builder container.builder create 18 3 1
 swift-ring-builder account.builder create 18 3 1
 
-swift-ring-builder object.builder add z1-${SWIFT_NODE_IP}:6010/sdb1 100
-swift-ring-builder container.builder add z1-${SWIFT_NODE_IP}:6011/sdb1 100
-swift-ring-builder account.builder add z1-${SWIFT_NODE_IP}:6012/sdb1 100
+list=${SWIFT_NODE_IP//\{/ }
+list=${list//\},/ }
+list=${list//\}/ }
+zone_iter=1
+for n in $list; do
+    zone_nodes=${n//,/ }
+    for node in $zone_nodes; do
+        swift-ring-builder object.builder add z${zone_iter}-${node}:6010/sdb1 100
+        swift-ring-builder container.builder add z${zone_iter}-${node}:6011/sdb1 100
+        swift-ring-builder account.builder add z${zone_iter}-${node}:6012/sdb1 100
+    done
+    let "zone_iter = $zone_iter + 1"
+done
 
 swift-ring-builder account.builder
 swift-ring-builder container.builder

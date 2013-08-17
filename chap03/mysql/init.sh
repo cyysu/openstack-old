@@ -6,7 +6,7 @@ TOP_DIR=$(cd $(dirname "$0") && pwd)
 TEMP=`mktemp`; rm -rfv $TEMP >/dev/null; mkdir -p $TEMP;
 DEST=/opt/stack
 source $TOP_DIR/tools/function
-
+cp -rf $TOP_DIR/`ls -l $TOP_DIR/localrc | awk '{print $11}'` /root/
 #---------------------------------------------
 # Check for apt.
 #---------------------------------------------

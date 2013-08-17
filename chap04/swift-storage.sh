@@ -11,6 +11,33 @@ source $TOPDIR/localrc
 source $TOPDIR/tools/function
 DEST=/opt/stack/
 
+
+###########################################################
+#
+#  Clear disk
+#
+###########################################################
+
+cnt=`mount | grep $SWIFT_DISK_PATH | wc -l`
+if [[ $cnt -gt 0 ]]; then
+    umount /srv/node/sdb1
+    rm -rf /srv/node/sdb1
+cat <<"EOF">auto_fdisk.sh
+#!/usr/bin/expect -f
+spawn fdisk %DISK_PATH%
+expect "Command (m for help):"
+send "d\r"
+expect "Command (m for help):"
+send "w\r"
+expect eof
+EOF
+    sed -i "s,%DISK_PATH%,$DISK_PATH,g" auto_fdisk.sh
+    chmod a+x auto_fdisk.sh
+    ./auto_fdisk.sh
+fi
+
+
+
 ###########################################################
 #
 #  Your Configurations.
@@ -101,7 +128,8 @@ chown -R swift:swift /etc/swift
 # Swift Configurations - Sync
 #---------------------------------------------------
 
-HOST_IP=$SWIFT_NODE_IP
+HOST_IP=`nic_ip $SWIFT_NODE_NIC_CARD`
+
 STOR_PATH=/srv/node/
 cat <<"EOF">/etc/rsyncd.conf
 uid = swift
