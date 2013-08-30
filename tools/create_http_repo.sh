@@ -30,7 +30,7 @@ ln -s /usr/include/libnl3/netlink /usr/include/netlink
 # Collect pip packages
 #---------------------------------------------------
 
-cp -rf $TOPDIR/packages/ubuntu /var/www/
-cp -rf $TOPDIR/packages/pip /var/www/
+#cp -rf $TOPDIR/packages/ubuntu /var/www/
+#cp -rf $TOPDIR/packages/pip /var/www/
 
 set +o xtrace
