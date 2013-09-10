@@ -234,12 +234,11 @@ nkill nova-conductor
 nkill nova-scheduler
 nkill nova-consoleauth
 
-
-nohup python ./bin/nova-api --config-file=/etc/nova/nova.conf >/var/log/nova/nova-api.log 2>&1 &
-nohup python ./bin/nova-cert --config-file=/etc/nova/nova.conf >/var/log/nova/nova-cert.log 2>&1 &
-nohup python ./bin/nova-conductor --config-file=/etc/nova/nova.conf >/var/log/nova/nova-db.log 2>&1 &
-nohup python ./bin/nova-scheduler --config-file=/etc/nova/nova.conf >/var/log/nova/nova-sche.log 2>&1 &
-nohup python ./bin/nova-consoleauth --config-file=/etc/nova/nova.conf >/var/log/nova/nova-ca.log 2>&1 &
+for n in nova-api nova-cert nova-conductor nova-scheduler nova-consoleauth; do
+    nohup python ./bin/$n \
+        --config-file=/etc/nova/nova.conf \
+        >/var/log/nova/$n.log 2>&1 &
+done
 EOF
 
 cp -rf $TOPDIR/tools/novarc /root/

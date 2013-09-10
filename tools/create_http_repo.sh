@@ -10,6 +10,12 @@ set -o xtrace
 TOPDIR=$(cd $(dirname "$0") && pwd)
 TEMP=`mktemp`; rm -rfv $TEMP >/dev/null;mkdir -p $TEMP;
 
+mkdir -p /var/www/
+[[ ! -e /var/www/debs ]] && cp -rf $TOPDIR/packages/debs /var/www/
+[[ ! -e /var/www/pip ]] && cp -rf $TOPDIR/packages/pip /var/www/
+
+echo "deb file:///var/www/ debs/" > /etc/apt/sources.list
+
 #---------------------------------------------------
 # Install apt packages
 #---------------------------------------------------
@@ -29,8 +35,5 @@ ln -s /usr/include/libnl3/netlink /usr/include/netlink
 #---------------------------------------------------
 # Collect pip packages
 #---------------------------------------------------
-
-#cp -rf $TOPDIR/packages/ubuntu /var/www/
-#cp -rf $TOPDIR/packages/pip /var/www/
 
 set +o xtrace
