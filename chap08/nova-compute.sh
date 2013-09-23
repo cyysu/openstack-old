@@ -35,37 +35,25 @@ nkill nova-xvpvncproxy
 ############################################################
 
 
-apt-get install -y --force-yes openssh-server build-essential git \
-python-dev python-setuptools python-pip \
-libxml2-dev libxslt-dev tgt lvm2 python-pam python-lxml \
-python-iso8601 python-sqlalchemy python-migrate \
-unzip python-mysqldb mysql-client memcached openssl expect \
-iputils-arping python-xattr \
-python-lxml kvm gawk iptables ebtables sqlite3 sudo kvm \
-vlan curl socat python-mox  \
-python-migrate python-gflags python-greenlet python-libxml2 \
-iscsitarget iscsitarget-dkms open-iscsi build-essential libxml2 libxml2-dev \
-libxslt1.1 libxslt1-dev vlan gnutls-bin \
-libgnutls-dev cdbs debhelper libncurses5-dev \
-libreadline-dev libavahi-client-dev libparted0-dev \
-libdevmapper-dev libudev-dev libpciaccess-dev \
-libcap-ng-dev libnl-3-dev libapparmor-dev \
-python-all-dev libxen-dev policykit-1 libyajl-dev \
-libpcap0.8-dev libnuma-dev radvd libxml2-utils \
-libnl-route-3-200 libnl-route-3-dev libnuma1 numactl \
-libnuma-dbg libnuma-dev dh-buildinfo expect \
-make fakeroot dkms openvswitch-switch openvswitch-datapath-dkms \
-ebtables iptables iputils-ping iputils-arping sudo python-boto \
-python-iso8601 python-routes python-suds python-netaddr \
- python-greenlet python-kombu python-eventlet \
-python-sqlalchemy python-mysqldb python-pyudev python-qpid dnsmasq-base \
-dnsmasq-utils vlan python-qpid websockify \
-python-stevedore python-docutils python-requests \
-libvirt-bin python-prettytable python-cheetah \
-python-requests alembic python-libvirt \
-mongodb-clients mongodb \
-mongodb-server mongodb-dev python-pymongo
-
+apt-get install -y --force-yes \
+alembic build-essential cdbs curl debhelper dh-buildinfo dkms \
+dnsmasq-base dnsmasq-utils ebtables expect fakeroot gawk git \
+gnutls-bin iptables iputils-arping iputils-ping iscsitarget \
+iscsitarget-dkms kvm libapparmor-dev libavahi-client-dev libcap-ng-dev \
+libdevmapper-dev libgnutls-dev libncurses5-dev libnl-3-dev libnl-route-3-200 \
+libnl-route-3-dev libnuma1 libnuma-dbg libnuma-dev libparted0-dev \
+libpcap0.8-dev libpciaccess-dev libreadline-dev libudev-dev \
+libvirt-bin libxen-dev libxml2 libxml2-dev libxml2-utils libxslt1.1 \
+libxslt1-dev libxslt-dev libyajl-dev lvm2 make memcached mongodb \
+mongodb-clients mongodb-dev mongodb-server mysql-client numactl \
+open-iscsi openssh-server openssl openvswitch-datapath-dkms \
+openvswitch-switch policykit-1 python-all-dev python-boto python-cheetah \
+python-dev python-docutils python-eventlet python-gflags python-greenlet \
+python-iso8601 python-kombu python-libvirt python-libxml2 python-lxml \
+python-migrate python-mox python-mysqldb python-netaddr python-pam \
+python-pip python-prettytable python-pymongo python-pyudev python-qpid \
+python-requests python-routes python-setuptools python-sqlalchemy \
+python-stevedore python-suds python-xattr radvd socat sqlite3
 
 [[ -e /usr/include/libxml ]] && rm -rf /usr/include/libxml
 ln -s /usr/include/libxml2/libxml /usr/include/libxml
@@ -80,14 +68,42 @@ service ssh restart
 #---------------------------------------------------
 
 [[ ! -d $DEST ]] && mkdir -p $DEST
+install_keystone
 install_nova
 
+#---------------------------------------------------
+# Configuration file
+#---------------------------------------------------
+[[ -d /etc/nova ]] && rm -rf /etc/nova/*
+mkdir -p /etc/nova
+cp -rf $TOPDIR/openstacksource/nova/etc/nova/* /etc/nova/
 
-if [[ ! -d /etc/nova ]] ; then
-    scp -pr $NOVA_HOST:/etc/nova /etc/
-    sed -i "s,my_ip=.*,my_ip=$HOST_IP,g" /etc/nova/nova.conf
-    sed -i "s,VNCSERVER_PROXYCLIENT_ADDRESS=.*,VNCSERVER_PROXYCLIENT_ADDRESS=$HOST_IP,g" /etc/nova/nova.conf
-fi
+file=/etc/nova/nova.conf
+cp -rf $TOPDIR/templates/nova.conf $file
+
+sed -i "s,%HOST_IP%,$HOST_IP,g" $file
+sed -i "s,%GLANCE_HOST%,$GLANCE_HOST,g" $file
+sed -i "s,%MYSQL_NOVA_USER%,$MYSQL_NOVA_USER,g" $file
+sed -i "s,%MYSQL_NOVA_PASSWORD%,$MYSQL_NOVA_PASSWORD,g" $file
+sed -i "s,%MYSQL_HOST%,$MYSQL_HOST,g" $file
+sed -i "s,%NOVA_HOST%,$NOVA_HOST,g" $file
+sed -i "s,%KEYSTONE_QUANTUM_SERVICE_PASSWORD%,$KEYSTONE_QUANTUM_SERVICE_PASSWORD,g" $file
+sed -i "s,%KEYSTONE_HOST%,$KEYSTONE_HOST,g" $file
+sed -i "s,%QUANTUM_HOST%,$QUANTUM_HOST,g" $file
+sed -i "s,%DASHBOARD_HOST%,$DASHBOARD_HOST,g" $file
+sed -i "s,%RABBITMQ_HOST%,$RABBITMQ_HOST,g" $file
+sed -i "s,%RABBITMQ_PASSWORD%,$RABBITMQ_PASSWORD,g" $file
+sed -i "s,%LIBVIRT_TYPE%,$LIBVIRT_TYPE,g" $file
+sed -i "s,VNCSERVER_PROXYCLIENT_ADDRESS=.*,VNCSERVER_PROXYCLIENT_ADDRESS=$HOST_IP,g" $file
+
+file=/etc/nova/api-paste.ini
+sed -i "s,auth_host = 127.0.0.1,auth_host = $KEYSTONE_HOST,g" $file
+sed -i "s,%SERVICE_TENANT_NAME%,$SERVICE_TENANT_NAME,g" $file
+sed -i "s,%SERVICE_USER%,nova,g" $file
+sed -i "s,%SERVICE_PASSWORD%,$KEYSTONE_NOVA_SERVICE_PASSWORD,g" $file
+
+file=/etc/nova/rootwrap.conf
+sed -i "s,filters_path=.*,filters_path=/etc/nova/rootwrap.d,g" $file
 
 mkdir -p $DEST/data/nova/instances/
 
@@ -104,10 +120,10 @@ nkill nova-xvpvncproxy
 
 mkdir -p /var/log/nova
 cd /opt/stack/noVNC/
+
 python ./utils/nova-novncproxy --config-file /etc/nova/nova.conf --web . >/var/log/nova/nova-novncproxy.log 2>&1 &
 
 python /opt/stack/nova/bin/nova-xvpvncproxy --config-file /etc/nova/nova.conf >/var/log/nova/nova-xvpvncproxy.log 2>&1 &
-
 
 nohup python /opt/stack/nova/bin/nova-compute --config-file=/etc/nova/nova.conf >/var/log/nova/nova-compute.log 2>&1 &
 
@@ -117,5 +133,9 @@ chmod +x /root/nova-compute.sh
 /root/nova-compute.sh
 rm -rf /tmp/pip*
 rm -rf /tmp/tmp*
+
+cp -rf $TOPDIR/tools/novarc /root/
+sed -i "s,%KEYSTONE_NOVA_SERVICE_PASSWORD%,$KEYSTONE_NOVA_SERVICE_PASSWORD,g" /root/novarc
+sed -i "s,%KEYSTONE_HOST%,$KEYSTONE_HOST,g" /root/novarc
 
 set +o xtrace

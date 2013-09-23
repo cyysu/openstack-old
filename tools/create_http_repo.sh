@@ -14,7 +14,10 @@ mkdir -p /var/www/
 [[ ! -e /var/www/debs ]] && cp -rf $TOPDIR/packages/debs /var/www/
 [[ ! -e /var/www/pip ]] && cp -rf $TOPDIR/packages/pip /var/www/
 
+echo "" > /etc/apt/apt.conf
 echo "deb file:///var/www/ debs/" > /etc/apt/sources.list
+apt-get clean all
+apt-get update
 
 #---------------------------------------------------
 # Install apt packages

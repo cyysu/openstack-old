@@ -13,6 +13,12 @@ TOKEN=`curl -s -d  "{\"auth\":{\"passwordCredentials\": {\"username\": \"$ADMIN_
 echo $TOKEN
 
 glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:9292 image-create --name "ttylinux.img" --public --container-format ami --disk-format ami  < "${TOPDIR}/ttylinux.img"
-glance image-update --property hw_disk_bus=ide `glance index | grep ttylinux | awk '{print $1}'`
+
+export OS_TENANT_NAME=service
+export OS_USERNAME=glance
+export OS_PASSWORD=$KEYSTONE_GLANCE_SERVICE_PASSWORD
+export OS_AUTH_URL="http://$KEYSTONE_HOST:5000/v2.0/"
+
+glance image-update  --property hw_disk_bus=ide `glance index  | grep ttylinux | awk '{print $1}'`
 
 set -o xtrace

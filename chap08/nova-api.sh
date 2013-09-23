@@ -62,26 +62,21 @@ mysql_cmd "DROP DATABASE IF EXISTS nova;"
 #
 ############################################################
 
+apt-get install -y --force-yes  \
+build-essential curl dnsmasq-base dnsmasq-base dnsmasq-utils \
+ebtables expect gawk git iptables iputils-arping kpartx libxml2-dev \
+libxslt-dev memcached mysql-client openssh-server openssl parted \
+python-boto python-carrot python-cheetah python-dev python-docutils \
+python-eventlet python-eventlet python-feedparser python-gflags \
+python-greenlet python-greenlet python-iso8601 python-iso8601 \
+python-kombu python-libxml2 python-lockfile python-lxml python-lxml \
+python-m2crypto python-migrate python-migrate python-mox python-mysqldb \
+python-mysqldb python-netaddr python-netifaces python-netifaces-dbg \
+python-pam python-passlib python-pip python-prettytable python-qpid \
+python-requests python-routes python-routes python-setuptools \
+python-sqlalchemy python-sqlalchemy python-stevedore python-suds \
+python-tempita python-xattr socat sqlite3 sudo unzip vlan websockify
 
-
-apt-get install -y --force-yes openssh-server build-essential git \
-python-dev python-setuptools python-pip \
-libxml2-dev libxslt-dev python-pam python-lxml \
-python-iso8601 python-sqlalchemy python-migrate \
-python-routes  python-passlib \
-python-greenlet python-eventlet unzip python-prettytable \
-python-mysqldb mysql-client memcached openssl expect \
-python-netifaces python-netifaces-dbg \
-dnsmasq-base dnsmasq-base dnsmasq-utils kpartx parted \
-iputils-arping python-mysqldb python-xattr \
-python-lxml gawk iptables ebtables sqlite3 sudo \
-vlan curl socat python-mox \
-python-migrate python-gflags python-greenlet python-libxml2 \
-python-routes python-netaddr  python-eventlet \
-python-cheetah python-carrot python-tempita python-sqlalchemy \
-python-suds python-lockfile python-m2crypto python-boto python-kombu \
-python-feedparser python-iso8601 python-qpid websockify \
-python-stevedore python-docutils python-requests
 service ssh restart
 
 #---------------------------------------------------
