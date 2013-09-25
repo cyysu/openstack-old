@@ -19,6 +19,13 @@ export OS_USERNAME=glance
 export OS_PASSWORD=$KEYSTONE_GLANCE_SERVICE_PASSWORD
 export OS_AUTH_URL="http://$KEYSTONE_HOST:5000/v2.0/"
 
-glance image-update  --property hw_disk_bus=ide `glance index  | grep ttylinux | awk '{print $1}'`
+cnt=`glance index | grep "ttylinux" | grep ami | wc -l`
+if [[ $cnt -gt 0 ]]; then
+    img=`glance index | grep "ttylinux" | grep ami | awk '{print $1}'`
+    for n in $img; do
+        echo $n
+        glance image-update --property hw_disk_bus=ide $n
+    done
+fi
 
 set -o xtrace

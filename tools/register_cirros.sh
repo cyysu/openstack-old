@@ -29,13 +29,23 @@ KERNEL_ID=$(glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:929
 RAMDISK_ID=$(glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:9292 image-create --name "${IMAGE_NAME%.ramdisk}" --public --container-format ari --disk-format ari < "${RAMDISK_FILE}" | grep ' id ' | awk '{print $4}')
 
 
-glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:9292 image-create --name "${IMAGE_NAME%.img}" --public --container-format ami --disk-format ami ${KERNEL_ID:+--property kernel_id=$KERNEL_ID} ${RAMDISK_ID:+--property ramdisk_id=$RAMDISK_ID} < "${IMAGE_FILE}"
+glance --os-auth-token $TOKEN --os-image-url http://$GLANCE_HOST:9292 image-create --name "${IMAGE_NAME}.img" --public --container-format ami --disk-format ami ${KERNEL_ID:+--property kernel_id=$KERNEL_ID} ${RAMDISK_ID:+--property ramdisk_id=$RAMDISK_ID} < "${IMAGE_FILE}"
 
 export OS_TENANT_NAME=service
 export OS_USERNAME=glance
 export OS_PASSWORD=$KEYSTONE_GLANCE_SERVICE_PASSWORD
 export OS_AUTH_URL="http://$KEYSTONE_HOST:5000/v2.0/"
 
-glance image-update --property hw_disk_bus=ide `glance index | grep "cirros.img" | awk '{print $1}'`
+echo $OS_PASSWORD
+echo $OS_AUTH_URL
+
+cnt=`glance index | grep "cirros.img" | grep ami | wc -l`
+if [[ $cnt -gt 0 ]]; then
+    img=`glance index | grep "cirros.img" | grep ami | awk '{print $1}'`
+    for n in $img; do
+        echo $n
+        glance image-update --property hw_disk_bus=ide $n
+    done
+fi
 
 set -o xtrace
