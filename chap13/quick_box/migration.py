@@ -3,6 +3,7 @@ import os
 import server
 
 _conn = None
+server_num = 5
 
 def get_connection():
     return server.Server()
@@ -31,8 +32,8 @@ def main():
                 total_files = total_files + 1
 
                 hash_value = _conn._md5_hash(line)
-                old_server_iter = hash_value % 5
-                new_server_iter = hash_value % 6
+                old_server_iter = hash_value % server_num
+                new_server_iter = hash_value % (server_num + 1000)
                 if old_server_iter != new_server_iter:
                     migrated_files = migrated_files + 1
 
