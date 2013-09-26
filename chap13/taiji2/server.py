@@ -8,14 +8,15 @@ class Server(object):
         self._server_num = server_num
         self._server_in_ring = []
         self._server_dict = {}
+
+        step = (1<<32) / self._server_num
         for i in range(self._server_num):
             dir_path = '/tmp/server%s' % i
             if not os.path.isdir(dir_path):
                 os.mkdir('/tmp/server%s' % i)
 
-            server_hash = self._md5_server('server%s' % i)
-            self._server_in_ring.append(server_hash)
-            self._server_dict[server_hash] = i
+            self._server_in_ring.append(step * (i+1))
+            self._server_dict[step*(i+1)] = i
 
         self._server_in_ring.sort()
 
