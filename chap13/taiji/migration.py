@@ -33,7 +33,7 @@ def main():
 
                 hash_value = _conn._md5_hash(line)
                 old_server_iter = hash_value % server_num
-                new_server_iter = hash_value % (server_num + 1000)
+                new_server_iter = hash_value % (server_num + 1)
                 if old_server_iter != new_server_iter:
                     migrated_files = migrated_files + 1
 

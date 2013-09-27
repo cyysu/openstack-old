@@ -4,21 +4,22 @@ import os
 from bisect import bisect_left
 
 class Server(object):
-    def __init__(self, server_num=5):
+    def __init__(self, server_num=5, vnode_num=100):
         self._server_num = server_num
-        self._server_in_ring = []
-        self._server_dict = {}
+        self._vnode_in_ring = []
+        self._vnode_2_server = []
+        self._vnode_num = vnode_num
 
-        step = (1<<32) / self._server_num
         for i in range(self._server_num):
             dir_path = '/tmp/server%s' % i
             if not os.path.isdir(dir_path):
                 os.mkdir('/tmp/server%s' % i)
 
-            self._server_in_ring.append(step * (i+1))
-            self._server_dict[step*(i+1)] = i
-
-        self._server_in_ring.sort()
+        vstep = (1<<32) / self._vnode_num
+        step = self._vnode_num / self._server_num
+        for i in range(self._vnode_num):
+            self._vnode_in_ring.append(vstep*(i+1))
+            self._vnode_2_server.append(i%self._server_num)
 
     def _md5_hash(self, content):
         md5obj = hashlib.md5()
@@ -33,10 +34,10 @@ class Server(object):
 
     def _get_server(self, file_path):
         hash_value = self._hash_object(file_path)
-        iter = bisect_left(self._server_in_ring, hash_value) % \
-                len(self._server_in_ring)
-        server_hash = self._server_in_ring[iter]
-        return self._server_dict[server_hash]
+        viter = bisect_left(self._vnode_in_ring, hash_value) % \
+                len(self._vnode_in_ring)
+        server_id = self._vnode_2_server[viter]
+        return server_id
 
     def store(self, file_path):
         if os.path.isfile(file_path):
