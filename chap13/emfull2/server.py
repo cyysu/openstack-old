@@ -78,10 +78,6 @@ class FileServer(object):
                     vnode_moved_list.append(x)
         else:
             print "Less vnode need to move, randomly choose vnode."
-            vnode_list = []
-            for i in range(self._vnode_num):
-                vnode_list.append(i)
-
             _re = [len(dc[i]) for i in range(self._server_num - add_server_num)]
             while moved_vnode_num > 0:
                 mv = max(_re)
