@@ -4,7 +4,7 @@ import sys
 from amqplib import client_0_8 as amqp
 from optparse import OptionParser
 
-def _send_msg(msg):
+def _send_msg(message):
     conn = amqp.Connection(host="localhost:5672",
                            userid="guest", 
                            assword="guest",
@@ -12,6 +12,7 @@ def _send_msg(msg):
                            insist=False)
     chan = conn.channel()
 
+    msg = amqp.Message(message)
     msg.properties["delivery_mode"] = 2
     chan.basic_publish(msg,exchange="cloud_storage",routing_key="router_key")
 
