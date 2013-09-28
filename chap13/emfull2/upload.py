@@ -1,6 +1,22 @@
-from optparse import OptionParser
 import os
 import server
+import sys
+from amqplib import client_0_8 as amqp
+from optparse import OptionParser
+
+def _send_msg(msg):
+    conn = amqp.Connection(host="localhost:5672",
+                           userid="guest", 
+                           assword="guest",
+                           virtual_host="/",
+                           insist=False)
+    chan = conn.channel()
+
+    msg.properties["delivery_mode"] = 2
+    chan.basic_publish(msg,exchange="cloud_storage",routing_key="router_key")
+
+    chan.close()
+    conn.close()
 
 _conn = None
 
@@ -21,9 +37,8 @@ def main():
         elif file_path[0] == '/':
             abs_path = args[0]
 
-    _conn = get_connection()
-    _conn.store(abs_path)
-    print abs_path
+    if os.path.isfile(abs_path):
+        _send_msg(abs_path)
 
 if __name__ == '__main__':
     main()
