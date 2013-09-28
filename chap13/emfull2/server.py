@@ -73,9 +73,7 @@ class FileServer(object):
         vnode_moved_list = []
         if moved_vnode_from_server > 1:
             for i in range(self._server_num - add_server_num):
-                print "server%s" % i
                 choosed_list = random.sample(dc[i], moved_vnode_from_server)
-                print choosed_list 
                 for x in choosed_list:
                     vnode_moved_list.append(x)
         else:
@@ -94,6 +92,7 @@ class FileServer(object):
                 dc[pos].remove(chooosed_vnode)
                 _re[pos] = _re[pos] - 1
                 vnode_moved_list.append(choosed_vnode)
+                moved_vnode_num = moved_vnode_num - 1
 
         if len(vnode_moved_list) == 0:
             return 0
