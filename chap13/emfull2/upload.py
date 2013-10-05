@@ -40,6 +40,12 @@ def main():
 
     if os.path.isfile(abs_path):
         _send_msg(abs_path)
+    elif args[0] == 'add_server':
+        _send_msg(args[0])
+    elif args[0] == 'vnode_info':
+        _send_msg(args[0])
+    else:
+        print 'You should input an file path!'
 
 if __name__ == '__main__':
     main()

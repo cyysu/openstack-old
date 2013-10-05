@@ -84,8 +84,8 @@ class FileServer(object):
                 pos = [i for i in range(len(_re)) if _re[i]==mv][0]
                 if 0 == mv:
                     break
-                chooosed_vnode = random.sample(dc[pos], 1)[0]
-                dc[pos].remove(chooosed_vnode)
+                choosed_vnode = random.sample(dc[pos], 1)[0]
+                dc[pos].remove(choosed_vnode)
                 _re[pos] = _re[pos] - 1
                 vnode_moved_list.append(choosed_vnode)
                 moved_vnode_num = moved_vnode_num - 1
@@ -114,9 +114,18 @@ class FileServer(object):
                         moved_files_cnt = moved_files_cnt + 1
                         print "Move %s to /tmp/server%s/" % \
                                  (f_path, server_id)
-            self._vnode_2_server[vnode_id] = server_id
+            new_vnode_2_server[vnode_id] = server_id
+
+        self._vnode_2_server = new_vnode_2_server
+
+        self.vnode_info()
 
         return moved_files_cnt
+
+    def vnode_info(self):
+        dc = self._node_dict()
+        for i in range(self._server_num):
+            print "Server %s has %s novdes" % (i, len(dc[i]))
 
     def store(self, file_path):
         if os.path.isfile(file_path):
@@ -128,8 +137,8 @@ class FileServer(object):
         else:
             print 'We need to store files!'
 
-_fs = None
 
+_fs = None
 
 def recv_callback(msg):
     global _fs
@@ -142,6 +151,8 @@ def recv_callback(msg):
     if msg.body == 'add_server':
         moved_files = _fs.add_server()
         print "Moved files = %s" % moved_files
+    elif msg.body == 'vnode_info':
+        _fs.vnode_info()
     else:
         _fs.store(file_path)
 

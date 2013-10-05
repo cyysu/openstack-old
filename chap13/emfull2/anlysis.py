@@ -13,7 +13,7 @@ def count_balance_rate(record):
     return over, under
 
 def main():
-    server_cnt = data = [132,134, 133, 128, 119]
+    server_cnt = [475, 474, 482, 471, 479]
     over, under = count_balance_rate(server_cnt)
 
 if __name__ == '__main__':
