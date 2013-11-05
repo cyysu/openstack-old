@@ -1,1 +1,0 @@
-../../chap07/cinder-volume.sh

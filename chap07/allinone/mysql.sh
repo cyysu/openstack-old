@@ -1,1 +1,0 @@
-../../chap03/mysql/mysql.sh

@@ -1,1 +1,0 @@
-../../chap03/rabbitmq/rabbitmq.sh

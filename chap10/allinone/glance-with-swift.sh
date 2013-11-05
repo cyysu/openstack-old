@@ -1,1 +1,0 @@
-../../chap05/glance-with-swift.sh
