@@ -34,8 +34,4 @@ ln -s /usr/include/libxml2/libxml /usr/include/libxml
 [[ -e /usr/include/netlink ]] && rm -rf /usr/include/netlink
 ln -s /usr/include/libnl3/netlink /usr/include/netlink
 
-#---------------------------------------------------
-# Collect pip packages
-#---------------------------------------------------
-
 set +o xtrace
