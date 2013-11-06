@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
 # Copyright 2010 United States Government as represented by the
@@ -17,7 +17,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""Starter script for Vsm ServiceManage."""
+"""Starter script for Vsm Scheduler."""
 
 import eventlet
 eventlet.monkey_patch()
@@ -44,6 +44,6 @@ if __name__ == '__main__':
     logging.setup("monitor")
     utils.monkey_patch()
     launcher = service.ProcessLauncher()
-    server = service.Service.create(binary='monitor-conductor')
+    server = service.Service.create(binary='monitor-scheduler')
     launcher.launch_server(server)
     launcher.wait()

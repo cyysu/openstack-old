@@ -15,9 +15,7 @@ function set_password {
 }
 
 function mysql_cmd() {
-    set +o xtrace
     mysql -uroot -p$MYSQL_ROOT_PASSWORD -h$MYSQL_HOST -e "$@"
-    set -o xtrace
 }
 
 function source_install() {

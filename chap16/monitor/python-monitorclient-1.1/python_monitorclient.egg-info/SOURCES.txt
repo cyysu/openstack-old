@@ -69,6 +69,8 @@ tests/utils.py
 tests/v1/__init__.py
 tests/v1/fakes.py
 tests/v1/test_auth.py
+tests/v1/test_energy_backups.py
+tests/v1/test_energys.py
 tests/v1/test_quota_classes.py
 tests/v1/test_quotas.py
 tests/v1/test_shell.py
@@ -79,6 +81,8 @@ tests/v1/contrib/test_list_extensions.py
 tests/v2/__init__.py
 tests/v2/fakes.py
 tests/v2/test_auth.py
+tests/v2/test_energy_backups.py
+tests/v2/test_energys.py
 tests/v2/test_quota_classes.py
 tests/v2/test_quotas.py
 tests/v2/test_shell.py

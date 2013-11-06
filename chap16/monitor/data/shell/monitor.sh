@@ -51,7 +51,6 @@ apt-get --option \
 install -y --force-yes mysql-client
 
 nkill monitor
-[[ -d $DEST/monitor ]] && cp -rf $TOPDIR/../../monitor/etc/monitor/* $DEST/monitor/etc/monitor/
 mysql_cmd "DROP DATABASE IF EXISTS monitor;"
 
 ############################################################
@@ -75,12 +74,12 @@ service ssh restart
 # Copy source code to DEST Dir
 #---------------------------------------------------
 
-[[ ! -d $DEST ]] && mkdir -p $DEST
-if [[ ! -d $DEST/monitor ]]; then
-    [[ ! -d $DEST/monitor ]] && cp -rf $TOPDIR/../../monitor $DEST/
-    install_package monitor ./tools/ pip-requires
-    source_install monitor
-fi
+[[ ! -e $DEST/monitor ]] && cp -rf $TOPDIR/../../monitor $DEST/
+[[ ! -e $DEST/python-monitorclient-1.1 ]] && cp -rf $TOPDIR/../../python-monitorclient-1.1 $DEST/
+install_package monitor ./tools/ pip-requires
+install_package python-monitorclient-1.1 ./tools/ pip-requires
+source_install monitor
+source_install python-monitorclient-1.1
 
 
 #---------------------------------------------------
