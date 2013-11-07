@@ -1,8 +1,5 @@
 #!/bin/bash
 
-set -e
-set -o xtrace
-
 if [[ $# -eq 1 ]]; then
     git config --global user.name "JiYou"
     git config --global user.email "jiyou09@gmail.com"
@@ -14,5 +11,3 @@ if [[ $# -eq 1 ]]; then
 else
     echo "Useage: ./update.sh commit_msg"
 fi
-
-set +o xtrace
