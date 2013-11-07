@@ -201,7 +201,9 @@ mkdir -p /var/log/monitor
 rm -rf /var/log/monitor/*
 nkill monitor
 
-python /opt/stack/monitor/bin/monitor-api --config-file /etc/monitor/monitor.conf >/var/log/monitor/monitor-api.log 2>&1 &
+python /opt/stack/monitor/bin/monitor-api \
+    --config-file /etc/monitor/monitor.conf \
+    >/var/log/monitor/monitor-api.log 2>&1 &
 EOF
 
 chmod +x /root/monitor.sh
