@@ -177,7 +177,6 @@ sed -i "s,%RABBITMQ_HOST%,$RABBITMQ_HOST,g" $file
 sed -i "s,%MYSQL_MONITOR_USER%,$MYSQL_MONITOR_USER,g" $file
 sed -i "s,%MYSQL_MONITOR_PASSWORD%,$MYSQL_MONITOR_PASSWORD,g" $file
 sed -i "s,%MYSQL_HOST%,$MYSQL_HOST,g" $file
-sed -i "s,%VOLUME_GROUP%,$VOLUME_GROUP,g" $file
 
 
 ###########################################################
@@ -199,8 +198,10 @@ monitor-manage db sync
 cat <<"EOF" > /root/monitor.sh
 #!/bin/bash
 mkdir -p /var/log/monitor
+rm -rf /var/log/monitor/*
+nkill monitor
+
 python /opt/stack/monitor/bin/monitor-api --config-file /etc/monitor/monitor.conf >/var/log/monitor/monitor-api.log 2>&1 &
-python /opt/stack/monitor/bin/monitor-conductor --config-file /etc/monitor/monitor.conf>/var/log/monitor/monitor-conductor.log 2>&1 &
 EOF
 
 chmod +x /root/monitor.sh
