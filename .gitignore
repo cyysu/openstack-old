@@ -1,1 +1,9 @@
 *.pyc
+./chap16/monitor/python-monitorclient-1.1/build
+./chap16/monitor/monitor/build
+./packages/source/ceilometer/build
+./packages/source/quantum/build
+./packages/source/quantum/tools/build
+./packages/source/quantum/tools/build/alembic/docs/build
+./packages/source/cinder/tools/build
+./packages/source/nova/build
