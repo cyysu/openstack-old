@@ -1,3 +1,0 @@
-[console_scripts]
-quantum = quantumclient.shell:main
-
