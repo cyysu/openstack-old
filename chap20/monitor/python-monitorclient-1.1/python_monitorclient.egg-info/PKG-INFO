@@ -1,7 +1,7 @@
 Metadata-Version: 1.1
 Name: python-monitorclient
 Version: 1.0.4
-Summary: Client library for OpenStack Vsm API.
+Summary: Client library for OpenStack Monitor API.
 Home-page: https://github.com/openstack/python-monitorclient
 Author: OpenStack Contributors
 Author-email: openstack-dev@lists.openstack.org

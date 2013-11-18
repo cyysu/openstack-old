@@ -20,7 +20,6 @@ bin/monitor-all
 bin/monitor-api
 bin/monitor-conductor
 bin/monitor-manage
-bin/monitor-scheduler
 doc/.gitignore
 doc/Makefile
 doc/README.rst
@@ -125,7 +124,6 @@ monitor/api/schemas/v1.1/extensions.rng
 monitor/api/schemas/v1.1/limits.rng
 monitor/api/schemas/v1.1/metadata.rng
 monitor/api/v1/__init__.py
-monitor/api/v1/conductor.py
 monitor/api/v1/limits.py
 monitor/api/v1/router.py
 monitor/api/v1/types.py
@@ -150,10 +148,6 @@ monitor/db/sqlalchemy/migrate_repo/__init__.py
 monitor/db/sqlalchemy/migrate_repo/manage.py
 monitor/db/sqlalchemy/migrate_repo/migrate.cfg
 monitor/db/sqlalchemy/migrate_repo/versions/001_db_init.py
-monitor/db/sqlalchemy/migrate_repo/versions/002_device.py
-monitor/db/sqlalchemy/migrate_repo/versions/003_osd_state.py
-monitor/db/sqlalchemy/migrate_repo/versions/004_map_recipes_capacity.py
-monitor/db/sqlalchemy/migrate_repo/versions/005_test.py
 monitor/db/sqlalchemy/migrate_repo/versions/__init__.py
 monitor/locale/cinder.pot
 monitor/locale/bs/LC_MESSAGES/cinder.po

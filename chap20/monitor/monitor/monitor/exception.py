@@ -16,9 +16,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""Vsm base exception handling.
+"""Monitor base exception handling.
 
-Includes decorator for re-raising Vsm-type exceptions.
+Includes decorator for re-raising Monitor-type exceptions.
 
 SHOULD include dedicated exception logging.
 
@@ -93,8 +93,8 @@ def wrap_db_error(f):
     return _wrap
 
 
-class VsmException(Exception):
-    """Base Vsm Exception
+class MonitorException(Exception):
+    """Base Monitor Exception
 
     To correctly use this class, inherit from it and define
     a 'message' property. That message will get printf'd
@@ -131,14 +131,14 @@ class VsmException(Exception):
                     # at least get the core message out if something happened
                     message = self.message
 
-        super(VsmException, self).__init__(message)
+        super(MonitorException, self).__init__(message)
 
 
-class GlanceConnectionFailed(VsmException):
+class GlanceConnectionFailed(MonitorException):
     message = _("Connection to glance failed") + ": %(reason)s"
 
 
-class NotAuthorized(VsmException):
+class NotAuthorized(MonitorException):
     message = _("Not authorized.")
     code = 403
 
@@ -151,11 +151,11 @@ class PolicyNotAuthorized(NotAuthorized):
     message = _("Policy doesn't allow %(action)s to be performed.")
 
 
-class ImageNotAuthorized(VsmException):
+class ImageNotAuthorized(MonitorException):
     message = _("Not authorized for image %(image_id)s.")
 
 
-class Invalid(VsmException):
+class Invalid(MonitorException):
     message = _("Unacceptable parameters.")
     code = 400
 
@@ -168,7 +168,7 @@ class ServiceManageAttached(Invalid):
     message = _("ServiceManage %(servicemanage_id)s is still attached, detach servicemanage first.")
 
 
-class SfJsonEncodeFailure(VsmException):
+class SfJsonEncodeFailure(MonitorException):
     message = _("Failed to load data into json format")
 
 
@@ -215,8 +215,8 @@ class ServiceUnavailable(Invalid):
     message = _("Service is unavailable at this time.")
 
 
-class VsmServiceUnavailable(ServiceUnavailable):
-    message = _("Vsm service is unavailable at this time.")
+class MonitorServiceUnavailable(ServiceUnavailable):
+    message = _("Monitor service is unavailable at this time.")
 
 
 class ImageUnacceptable(Invalid):
@@ -227,7 +227,7 @@ class InvalidUUID(Invalid):
     message = _("Expected a uuid but received %(uuid).")
 
 
-class NotFound(VsmException):
+class NotFound(MonitorException):
     message = _("Resource could not be found.")
     code = 404
     safe = True
@@ -295,11 +295,11 @@ class SnapshotNotFound(NotFound):
     message = _("Snapshot %(snapshot_id)s could not be found.")
 
 
-class ServiceManageIsBusy(VsmException):
+class ServiceManageIsBusy(MonitorException):
     message = _("deleting servicemanage %(servicemanage_name)s that has snapshot")
 
 
-class SnapshotIsBusy(VsmException):
+class SnapshotIsBusy(MonitorException):
     message = _("deleting snapshot %(snapshot_name)s that has "
                 "dependent servicemanages")
 
@@ -308,15 +308,15 @@ class ISCSITargetNotFoundForServiceManage(NotFound):
     message = _("No target id found for servicemanage %(servicemanage_id)s.")
 
 
-class ISCSITargetCreateFailed(VsmException):
+class ISCSITargetCreateFailed(MonitorException):
     message = _("Failed to create iscsi target for servicemanage %(servicemanage_id)s.")
 
 
-class ISCSITargetAttachFailed(VsmException):
+class ISCSITargetAttachFailed(MonitorException):
     message = _("Failed to attach iSCSI target for servicemanage %(servicemanage_id)s.")
 
 
-class ISCSITargetRemoveFailed(VsmException):
+class ISCSITargetRemoveFailed(MonitorException):
     message = _("Failed to remove iscsi target for servicemanage %(servicemanage_id)s.")
 
 
@@ -340,13 +340,13 @@ class HostNotFound(NotFound):
     message = _("Host %(host)s could not be found.")
 
 
-class VsmHostNotFound(HostNotFound):
-    message = _("Vsm host %(host)s could not be found.")
+class MonitorHostNotFound(HostNotFound):
+    message = _("Monitor host %(host)s could not be found.")
 
 class OsdNotFound(NotFound):
     message = _("Osd %(osd)s could not be found.")
 
-class VsmOsdNotFound(OsdNotFound):
+class MonitorOsdNotFound(OsdNotFound):
     message = _("Osd %(osd)s could not be found.")
 
 class SchedulerHostFilterNotFound(NotFound):
@@ -394,7 +394,7 @@ class ReservationNotFound(QuotaNotFound):
     message = _("Quota reservation %(uuid)s could not be found.")
 
 
-class OverQuota(VsmException):
+class OverQuota(MonitorException):
     message = _("Quota exceeded for resources: %(overs)s")
 
 
@@ -415,12 +415,12 @@ class ClassNotFound(NotFound):
     message = _("Class %(class_name)s could not be found: %(exception)s")
 
 
-class NotAllowed(VsmException):
+class NotAllowed(MonitorException):
     message = _("Action not allowed.")
 
 
 #TODO(bcwaldon): EOL this exception!
-class Duplicate(VsmException):
+class Duplicate(MonitorException):
     pass
 
 
@@ -432,11 +432,11 @@ class ServiceManageTypeExists(Duplicate):
     message = _("ServiceManage Type %(id)s already exists.")
 
 
-class MigrationError(VsmException):
+class MigrationError(MonitorException):
     message = _("Migration error") + ": %(reason)s"
 
 
-class MalformedRequestBody(VsmException):
+class MalformedRequestBody(MonitorException):
     message = _("Malformed message body: %(reason)s")
 
 
@@ -448,15 +448,15 @@ class PasteAppNotFound(NotFound):
     message = _("Could not load paste app '%(name)s' from %(path)s")
 
 
-class NoValidHost(VsmException):
+class NoValidHost(MonitorException):
     message = _("No valid host was found. %(reason)s")
 
 
-class WillNotSchedule(VsmException):
+class WillNotSchedule(MonitorException):
     message = _("Host %(host)s is not up or doesn't exist.")
 
 
-class QuotaError(VsmException):
+class QuotaError(MonitorException):
     message = _("Quota exceeded") + ": code=%(code)s"
     code = 413
     headers = {'Retry-After': 0}
@@ -484,16 +484,16 @@ class DuplicateSfServiceManageNames(Duplicate):
     message = _("Detected more than one servicemanage with name %(vol_name)s")
 
 
-class Duplicate3PARHost(VsmException):
+class Duplicate3PARHost(MonitorException):
     message = _("3PAR Host already exists: %(err)s.  %(info)s")
 
 
-class ServiceManageTypeCreateFailed(VsmException):
+class ServiceManageTypeCreateFailed(MonitorException):
     message = _("Cannot create servicemanage_type with "
                 "name %(name)s and specs %(extra_specs)s")
 
 
-class SolidFireAPIException(VsmException):
+class SolidFireAPIException(MonitorException):
     message = _("Bad response from SolidFire API")
 
 
@@ -509,15 +509,15 @@ class MalformedResponse(Invalid):
     message = _("Malformed response to command %(cmd)s: %(reason)s")
 
 
-class BadHTTPResponseStatus(VsmException):
+class BadHTTPResponseStatus(MonitorException):
     message = _("Bad HTTP response status %(status)s")
 
 
-class FailedCmdWithDump(VsmException):
+class FailedCmdWithDump(MonitorException):
     message = _("Operation failed with status=%(status)s. Full dump: %(data)s")
 
 
-class ZadaraServerCreateFailure(VsmException):
+class ZadaraServerCreateFailure(MonitorException):
     message = _("Unable to create server object for initiator %(name)s")
 
 
@@ -525,7 +525,7 @@ class ZadaraServerNotFound(NotFound):
     message = _("Unable to find server object for initiator %(name)s")
 
 
-class ZadaraVPSANoActiveController(VsmException):
+class ZadaraVPSANoActiveController(MonitorException):
     message = _("Unable to find any active VPSA controller")
 
 
@@ -541,12 +541,12 @@ class InstanceNotFound(NotFound):
     message = _("Instance %(instance_id)s could not be found.")
 
 
-class ServiceManageBackendAPIException(VsmException):
+class ServiceManageBackendAPIException(MonitorException):
     message = _("Bad or unexpected response from the storage servicemanage "
                 "backend API: %(data)s")
 
 
-class NfsException(VsmException):
+class NfsException(MonitorException):
     message = _("Unknown NFS exception")
 
 
@@ -558,7 +558,7 @@ class NfsNoSuitableShareFound(NotFound):
     message = _("There is no share which can host %(servicemanage_size)sG")
 
 
-class GlusterfsException(VsmException):
+class GlusterfsException(MonitorException):
     message = _("Unknown Gluster exception")
 
 
@@ -587,5 +587,10 @@ class InvalidBackup(Invalid):
     message = _("Invalid backup: %(reason)s")
 
 
-class SwiftConnectionFailed(VsmException):
+class SwiftConnectionFailed(MonitorException):
     message = _("Connection to swift failed") + ": %(reason)s"
+
+# Exceptions for MonitorService
+
+class MonitorServiceNotFound(NotFound):
+    message = _("Not Found: %(monitor_service)s")

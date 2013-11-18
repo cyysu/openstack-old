@@ -44,7 +44,7 @@ class ShellTest(utils.TestCase):
             self.useFixture(fixtures.EnvironmentVariable(var,
                                                          self.FAKE_ENV[var]))
 
-        self.shell = shell.OpenStackVsmShell()
+        self.shell = shell.OpenStackMonitorShell()
 
         #HACK(bcwaldon): replace this when we start using stubs
         self.old_get_client_class = client.get_client_class

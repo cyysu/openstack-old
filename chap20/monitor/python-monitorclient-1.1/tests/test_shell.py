@@ -31,7 +31,7 @@ class ShellTest(utils.TestCase):
         orig = sys.stdout
         try:
             sys.stdout = cStringIO.StringIO()
-            _shell = monitorclient.shell.OpenStackVsmShell()
+            _shell = monitorclient.shell.OpenStackMonitorShell()
             _shell.main(argstr.split())
         except SystemExit:
             exc_type, exc_value, exc_traceback = sys.exc_info()

@@ -217,7 +217,7 @@ htmlhelp_basename = 'monitordoc'
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'Vsm.tex', u'Vsm Documentation',
+    ('index', 'Monitor.tex', u'Monitor Documentation',
      u'Anso Labs, LLC', 'manual'),
 ]
 

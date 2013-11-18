@@ -33,7 +33,7 @@ setuptools.setup(
     version=setup.get_version(project),
     author="OpenStack Contributors",
     author_email="openstack-dev@lists.openstack.org",
-    description="Client library for OpenStack Vsm API.",
+    description="Client library for OpenStack Monitor API.",
     long_description=read_file("README.rst"),
     license="Apache License, Version 2.0",
     url="https://github.com/openstack/python-monitorclient",

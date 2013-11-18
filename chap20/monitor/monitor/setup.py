@@ -74,7 +74,6 @@ setuptools.setup(
     scripts=['bin/monitor-all',
              'bin/monitor-api',
              'bin/monitor-conductor',
-             'bin/monitor-scheduler',
              'bin/monitor-agent',
              'bin/monitor-manage'],
     py_modules=[])
