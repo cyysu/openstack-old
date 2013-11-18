@@ -7,3 +7,6 @@
 ./packages/source/quantum/tools/build/alembic/docs/build
 ./packages/source/cinder/tools/build
 ./packages/source/nova/build
+./chap20/monitor/python-monitorclient-1.1/build
+./chap20/monitor/monitor/build
+.
