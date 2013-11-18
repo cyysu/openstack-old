@@ -124,34 +124,6 @@ def require_context(f):
     return wrapper
 
 
-def require_servicemanage_exists(f):
-    """Decorator to require the specified servicemanage to exist.
-
-    Requires the wrapped function to use context and servicemanage_id as
-    their first two arguments.
-    """
-
-    def wrapper(context, servicemanage_id, *args, **kwargs):
-        db.servicemanage_get(context, servicemanage_id)
-        return f(context, servicemanage_id, *args, **kwargs)
-    wrapper.__name__ = f.__name__
-    return wrapper
-
-
-def require_snapshot_exists(f):
-    """Decorator to require the specified snapshot to exist.
-
-    Requires the wrapped function to use context and snapshot_id as
-    their first two arguments.
-    """
-
-    def wrapper(context, snapshot_id, *args, **kwargs):
-        db.api.snapshot_get(context, snapshot_id)
-        return f(context, snapshot_id, *args, **kwargs)
-    wrapper.__name__ = f.__name__
-    return wrapper
-
-
 def model_query(context, *args, **kwargs):
     """Query helper that accounts for context's `read_deleted` field.
 
@@ -527,3 +499,79 @@ def compute_node_utilization_set(context, host, free_ram_mb=None,
 
     return compute_node
 
+# Operations on monitor_services table.
+@require_admin_context
+def monitor_service_get(context, monitor_service_id, session=None):
+    result = model_query(context, models.MonitorService, session=session).\
+                     filter_by(id=monitor_service_id).\
+                     first()
+
+    if not result:
+        raise exception.MonitorServiceNotFound(
+                            monitor_service=monitor_service_id)
+
+    return result
+
+@require_admin_context
+def monitor_service_get_all(context, session=None):
+    return model_query(context, models.MonitorService, session=session).\
+                    all()
+
+
+@require_admin_context
+def monitor_service_create(context, values, session=None):
+    if not session:
+        session = get_session()
+
+    with session.begin(subtransactions=True):
+        monitor_service_ref = models.MonitorService()
+        session.add(monitor_service_ref)
+        monitor_service_ref.update(values)
+
+    return monitor_service_ref
+
+@require_admin_context
+def monitor_service_update(context, monitor_service_id, values):
+    session = get_session()
+    monitor_service_ref = None
+    with session.begin(subtransactions=True):
+        values['updated_at'] = timeutils.utcnow()
+        convert_datetimes(values, 'created_at', 'deleted_at', 'updated_at')
+        monitor_service_ref = monitor_service_get(
+                                   context,
+                                   monitor_service_id,
+                                   session=session)
+
+        if monitor_service_ref is None:
+            msg = "No Service Monitored with %s" % monitor_service_id
+            raise exception.NotFound(msg)
+
+        for (key, value) in values.iteritems():
+            monitor_service_ref[key] = value
+        monitor_service_ref.save(session=session)
+
+    return monitor_service_ref
+
+
+@require_admin_context
+def monitor_service_delete(context, monitor_service_id):
+    session = get_session()
+
+    with session.begin(subtransactions=True):
+        monitor_service_ref = monitor_service_get(context,
+                                                  monitor_service_id,
+                                                  session=session)
+
+        if monitor_service_ref is None:
+            msg = "No Service Monitored with %s" % monitor_service_id
+            raise exception.NotFound(msg)
+
+        monitor_service_ref['deleted_at'] = timeutils.utcnow()
+        monitor_service_ref['updated_at'] = monitor_service_ref['deleted_at']
+        monitor_service_ref['deleted'] = True
+        convert_datetimes(monitor_service_ref,
+                          'created_at',
+                          'deleted_at',
+                          'updated_at')
+
+        monitor_service_ref.save(session=session)

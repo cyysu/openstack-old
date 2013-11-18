@@ -20,7 +20,6 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey
 from sqlalchemy import Integer, MetaData, String, Table
 from sqlalchemy import Table, Text, Float
 
-
 def upgrade(migrate_engine):
     # Upgrade operations go here. Don't create your own engine;
     # bind migrate_engine to your metadata
@@ -39,7 +38,6 @@ def upgrade(migrate_engine):
         Column('report_count', Integer, nullable=False),
         Column('disabled', Boolean),
         Column('status', String(length=255)),
-        Column('availability_zone', String(length=255)),
     )
 
     try:
@@ -53,7 +51,6 @@ def upgrade(migrate_engine):
 def downgrade(migrate_engine):
     meta = MetaData()
     meta.bind = migrate_engine
-
     monitor_services = Table('monitor_services',
                      meta,
                      autoload=True)

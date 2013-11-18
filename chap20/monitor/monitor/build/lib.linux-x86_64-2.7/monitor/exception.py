@@ -589,3 +589,8 @@ class InvalidBackup(Invalid):
 
 class SwiftConnectionFailed(MonitorException):
     message = _("Connection to swift failed") + ": %(reason)s"
+
+# Exceptions for MonitorService
+
+class MonitorServiceNotFound(NotFound):
+    message = _("Not Found: %(monitor_service)s")

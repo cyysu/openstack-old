@@ -134,6 +134,10 @@ monitor/api/views/types.py
 monitor/api/views/versions.py
 monitor/common/__init__.py
 monitor/common/sqlalchemyutils.py
+monitor/conductor/__init__.py
+monitor/conductor/api.py
+monitor/conductor/manager.py
+monitor/conductor/rpcapi.py
 monitor/db/__init__.py
 monitor/db/api.py
 monitor/db/base.py
@@ -148,6 +152,7 @@ monitor/db/sqlalchemy/migrate_repo/__init__.py
 monitor/db/sqlalchemy/migrate_repo/manage.py
 monitor/db/sqlalchemy/migrate_repo/migrate.cfg
 monitor/db/sqlalchemy/migrate_repo/versions/001_db_init.py
+monitor/db/sqlalchemy/migrate_repo/versions/002_monitor_services.py
 monitor/db/sqlalchemy/migrate_repo/versions/__init__.py
 monitor/locale/cinder.pot
 monitor/locale/bs/LC_MESSAGES/cinder.po
