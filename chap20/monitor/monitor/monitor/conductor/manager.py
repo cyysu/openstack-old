@@ -40,19 +40,21 @@ FLAGS = flags.FLAGS
 
 
 class ConductorManager(manager.Manager):
-    """Chooses a host to create storages."""
 
     RPC_API_VERSION = '1.2'
 
     def __init__(self, service_name=None, *args, **kwargs):
-        #if not scheduler_driver:
-        #    scheduler_driver = FLAGS.scheduler_driver
-        #self.driver = importutils.import_object(scheduler_driver)
         super(ConductorManager, self).__init__(*args, **kwargs)
 
     def init_host(self):
-        LOG.info('init_host in manager JIYOU')
+        LOG.info('init_host in ConductorManager.')
+
+    def service_get_all(self, context):
+        service_list = db.service_get_all(context)
+        for x in service_list:
+            LOG.debug('x.id = %s' % x.id)
+            LOG.debug('x.topic = %s' % x.topic)
 
     def test_service(self, context):
-        LOG.info('JIYOU test_service in conductor')
+        LOG.info('test_service in conductor')
         return {'key': 'test_server_in_conductor'}

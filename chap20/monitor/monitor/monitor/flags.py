@@ -137,6 +137,9 @@ global_opts = [
     cfg.BoolOpt('api_rate_limit',
                 default=True,
                 help='whether to rate limit the api'),
+    cfg.StrOpt('monitor_availability_zone',
+               default='nova',
+               help='availability zone of this node'),
     cfg.ListOpt('osapi_servicemanage_ext_list',
                 default=[],
                 help='Specify list of extensions to load when using osapi_'

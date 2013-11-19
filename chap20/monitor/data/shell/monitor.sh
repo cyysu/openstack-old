@@ -194,20 +194,11 @@ monitor-manage db sync
 #
 ############################################################
 
+cp -rf $TOPDIR/../etc/init.d/* /etc/init.d/
 
-cat <<"EOF" > /root/monitor.sh
-#!/bin/bash
-mkdir -p /var/log/monitor
-rm -rf /var/log/monitor/*
-nkill monitor
+service monitor-api restart
 
-python /opt/stack/monitor/bin/monitor-api \
-    --config-file /etc/monitor/monitor.conf \
-    >/var/log/monitor/monitor-api.log 2>&1 &
-EOF
 
-chmod +x /root/monitor.sh
-/root/monitor.sh
 rm -rf /tmp/pip*
 rm -rf /tmp/tmp*
 
