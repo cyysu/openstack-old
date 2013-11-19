@@ -25,6 +25,7 @@ from monitor.api import extensions
 import monitor.api.openstack
 from monitor.api.v1 import limits
 from monitor.api.v1 import types
+from monitor.api.v1 import conductor
 from monitor.api import versions
 from monitor.openstack.common import log as logging
 
@@ -55,3 +56,10 @@ class APIRouter(monitor.api.openstack.APIRouter):
         self.resources['limits'] = limits.create_resource()
         mapper.resource("limit", "limits",
                         controller=self.resources['limits'])
+
+        self.resources['conductor'] = conductor.create_resource(ext_mgr)
+        mapper.resource("conductor", "conductor",
+                        controller=self.resources['conductor'],
+                        collection={'detail': 'GET',
+                                    'test_service': "POST"},
+                        member={'action': 'POST'})

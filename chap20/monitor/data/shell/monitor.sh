@@ -108,9 +108,9 @@ MONITOR_SERVICE=$(get_id keystone service-create \
 keystone endpoint-create \
     --region RegionOne \
     --service_id $MONITOR_SERVICE \
-    --publicurl "http://$MONITOR_HOST:8778/v1/\$(tenant_id)s" \
-    --adminurl "http://$MONITOR_HOST:8778/v1/\$(tenant_id)s" \
-    --internalurl "http://$MONITOR_HOST:8778/v1/\$(tenant_id)s"
+    --publicurl "http://$MONITOR_HOST:$MONITOR_PORT/v1/\$(tenant_id)s" \
+    --adminurl "http://$MONITOR_HOST:$MONITOR_PORT/v1/\$(tenant_id)s" \
+    --internalurl "http://$MONITOR_HOST:$MONITOR_PORT/v1/\$(tenant_id)s"
 fi
 
 
@@ -171,12 +171,14 @@ api_paste_config = /etc/monitor/api-paste.ini
 sql_connection = mysql://%MYSQL_MONITOR_USER%:%MYSQL_MONITOR_PASSWORD%@%MYSQL_HOST%/monitor?charset=utf8
 verbose = True
 auth_strategy = keystone
+osapi_servicemanage_listen_port=%MONITOR_PORT%
 EOF
 sed -i "s,%RABBITMQ_PASSWORD%,$RABBITMQ_PASSWORD,g" $file
 sed -i "s,%RABBITMQ_HOST%,$RABBITMQ_HOST,g" $file
 sed -i "s,%MYSQL_MONITOR_USER%,$MYSQL_MONITOR_USER,g" $file
 sed -i "s,%MYSQL_MONITOR_PASSWORD%,$MYSQL_MONITOR_PASSWORD,g" $file
 sed -i "s,%MYSQL_HOST%,$MYSQL_HOST,g" $file
+sed -i "s,%MONITOR_PORT%,$MONITOR_PORT,g" $file
 
 
 ###########################################################

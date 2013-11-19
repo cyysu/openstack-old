@@ -38,6 +38,8 @@ SERVICE_TENANT_NAME=service
 #---------------------------------------------
 
 MONITOR_HOST=192.168.111.11
+MONITOR_PORT=8778
 MYSQL_MONITOR_USER=monitor
 MYSQL_MONITOR_PASSWORD=monitor_password
 KEYSTONE_MONITOR_SERVICE_PASSWORD=keystone_monitor_password
+

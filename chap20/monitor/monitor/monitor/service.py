@@ -60,7 +60,7 @@ service_opts = [
                default="0.0.0.0",
                help='IP address for OpenStack ServiceManage API to listen'),
     cfg.IntOpt('osapi_servicemanage_listen_port',
-               default=8776,
+               default=8778,
                help='port for os servicemanage api to listen'), ]
 
 FLAGS = flags.FLAGS

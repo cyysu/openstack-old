@@ -219,6 +219,13 @@ class ServiceManageManager(base.ManagerWithFind):
         url = '/dbservice/host_status'
         return self.api.client.post(url, body=body)
 
+    def test_service(self, req=None):
+        """
+        Perform a monitor "action."
+        """
+        url = '/conductor/test_service'
+        return self.api.client.post(url)
+
     def resource_info(self, req=None):
         """
         Perform a monitor "action."
