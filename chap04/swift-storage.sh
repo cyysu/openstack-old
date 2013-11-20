@@ -31,7 +31,7 @@ expect "Command (m for help):"
 send "w\r"
 expect eof
 EOF
-    sed -i "s,%DISK_PATH%,$DISK_PATH,g" auto_fdisk.sh
+    sed -i "s,%DISK_PATH%,$SWIFT_DISK_PATH,g" auto_fdisk.sh
     chmod a+x auto_fdisk.sh
     ./auto_fdisk.sh
 fi
@@ -299,7 +299,14 @@ chmod a+x auto_fdisk.sh
 
 cd $TOPDIR
 ./auto_fdisk.sh
-DEV_PATH=`fdisk -l | grep ${DISK_PATH#*dev/*} | grep Linux | awk '{print $1}'`
+
+cnt=`fdisk -l | grep ${DISK_PATH#*dev/*} | grep Linux | awk '{print $1}' | wc -l`
+if [[ $cnt -eq 0 ]]; then
+    DEV_PATH=$DISK_PATH
+else
+    DEV_PATH=`fdisk -l | grep ${DISK_PATH#*dev/*} | grep Linux | awk '{print $1}'`
+fi
+
 mkfs.xfs -f  -i size=1024 $DEV_PATH
 n=${DEV_PATH#*dev/*}
 echo "$DEV_PATH /srv/node/sdb1 xfs noatime,nodiratime,nobarrier,logbufs=8 0 0" >> /etc/fstab

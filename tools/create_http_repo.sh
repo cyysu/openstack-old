@@ -10,6 +10,13 @@ set -o xtrace
 TOPDIR=$(cd $(dirname "$0") && pwd)
 TEMP=`mktemp`; rm -rfv $TEMP >/dev/null;mkdir -p $TEMP;
 
+old_dir=`pwd`
+cnt=`ls $TOPDIR | grep tools | wc -l`
+if [[ $cnt -gt 0 ]]; then
+    cd `ls -l tools | awk '{print $11}'`
+    TOPDIR=`pwd`
+fi
+
 mkdir -p /var/www/
 [[ ! -e /var/www/debs ]] && cp -rf $TOPDIR/../packages/debs /var/www/
 [[ ! -e /var/www/pip ]] && cp -rf $TOPDIR/../packages/pip /var/www/
@@ -33,5 +40,7 @@ apache2 unzip
 ln -s /usr/include/libxml2/libxml /usr/include/libxml
 [[ -e /usr/include/netlink ]] && rm -rf /usr/include/netlink
 ln -s /usr/include/libnl3/netlink /usr/include/netlink
+
+cd $old_dir
 
 set +o xtrace
