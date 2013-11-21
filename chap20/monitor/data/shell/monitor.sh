@@ -148,7 +148,7 @@ mkdir -p /etc/monitor
 cp -rf $TOPDIR/../../monitor/etc/monitor/* /etc/monitor/
 
 file=/etc/monitor/api-paste.ini
-sed -i "s,auth_host = 127.0.0.1,auth_host = $KEYSTONE_HOST,g" $file
+sed -i "s,%KEYSTONE_HOST%,$KEYSTONE_HOST,g" $file
 sed -i "s,%SERVICE_TENANT_NAME%,$SERVICE_TENANT_NAME,g" $file
 sed -i "s,%SERVICE_USER%,monitor,g" $file
 sed -i "s,%SERVICE_PASSWORD%,$KEYSTONE_MONITOR_SERVICE_PASSWORD,g" $file
