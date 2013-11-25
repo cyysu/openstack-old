@@ -26,4 +26,5 @@ chmod +x /usr/bin/nkill
 #---------------------------------------------
 
 setup_iptables
+
 set +o xtrace

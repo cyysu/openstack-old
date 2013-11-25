@@ -1,6 +1,39 @@
 #!/bin/bash
 set -e
 set -o xtrace
+
+TOPDIR=$(cd $(dirname "$0") && pwd)
+cmd_old_dir=`pwd`
+cd $TOPDIR
+
+function find_and_run() {
+    old_dir=`pwd`
+    fl=$1
+    num=`find . -name "$fl" | wc -l`
+    while [ $num -eq 0 ]; do
+        cd ..
+        num=`find . -name "$fl" | wc -l`
+        if [[ $num -gt 0 ]]; then
+            for x in `find . -name "$fl"`; do
+                ./$x
+            done
+        fi
+    done
+    cd $old_dir
+}
+
+cnt=`cat /etc/rc.local | grep iptables | wc -l`
+if [[ $cnt -eq 0 ]]; then
+    find_and_run init.sh
+fi
+
+if [[ ! -e ./chap03/mysql/tools ]]; then
+    old_dir=`pwd`
+    cd ./chap03/mysql/
+    ln -s ../../tools ./tools
+    cd $old_dir
+fi
+
 if [[ ! -e ./chap08/multiplenodes/m-compute-node/openstacksource ]]; then
   old_dir=`pwd`
   cd ./chap08/multiplenodes/m-compute-node
@@ -1415,4 +1448,131 @@ if [[ ! -e ./chap07/tools ]]; then
   cd $old_dir
 fi
 
+if [[ ! -e ./chap06/init.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap06
+  ln -s ../chap03/mysql/init.sh init.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap06/tools ]]; then
+  old_dir=`pwd`
+  cd ./chap06
+  ln -s ../tools/ tools
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap05/init.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap05
+  ln -s ../chap03/mysql/init.sh init.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap05/tools ]]; then
+  old_dir=`pwd`
+  cd ./chap05
+  ln -s ../tools/ tools
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap09/init.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap09
+  ln -s ../chap03/mysql/init.sh init.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap09/tools ]]; then
+  old_dir=`pwd`
+  cd ./chap09
+  ln -s ../tools/ tools
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap04/init.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap04
+  ln -s ../chap03/mysql/init.sh init.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/keystone/mysql.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap03/keystone
+  ln -s ../mysql/mysql.sh mysql.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/keystone/init.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap03/keystone
+  ln -s ../mysql/init.sh init.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/keystone/rabbitmq.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap03/keystone
+  ln -s ../rabbitmq/rabbitmq.sh rabbitmq.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/keystone/tools ]]; then
+  old_dir=`pwd`
+  cd ./chap03/keystone
+  ln -s ../../tools/ tools
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/keystone/mysql-src-ist.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap03/keystone
+  ln -s ../mysql/mysql-src-ist.sh mysql-src-ist.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/rabbitmq/mysql.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap03/rabbitmq
+  ln -s ../mysql/mysql.sh mysql.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/rabbitmq/init.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap03/rabbitmq
+  ln -s ../mysql/init.sh init.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/rabbitmq/tools ]]; then
+  old_dir=`pwd`
+  cd ./chap03/rabbitmq
+  ln -s ../../tools/ tools
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/rabbitmq/mysql-src-ist.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap03/rabbitmq
+  ln -s ../mysql/mysql-src-ist.sh mysql-src-ist.sh
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap03/mysql/tools ]]; then
+  old_dir=`pwd`
+  cd ./chap03/mysql
+  ln -s ../../tools/ tools
+  cd $old_dir
+fi
+
+if [[ ! -e ./chap07/init.sh ]]; then
+  old_dir=`pwd`
+  cd ./chap07
+  ln -s ../chap03//mysql/init.sh init.sh
+  cd $old_dir
+fi
+
+cd $cmd_old_dir
 set +o xtrace

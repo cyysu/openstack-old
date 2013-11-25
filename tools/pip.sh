@@ -32,7 +32,7 @@ ln -s /usr/include/libnl3/netlink /usr/include/netlink
 #---------------------------------------------------
 
 cd $TOPDIR/../openstacksource
-source ~/proxy
+[[ -e ~/proxy ]] && source ~/proxy
 mkdir -p /tmp/pip
 cp -rf $TOPDIR/ch.sh /tmp/
 
