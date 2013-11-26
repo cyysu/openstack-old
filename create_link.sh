@@ -1574,5 +1574,21 @@ if [[ ! -e ./chap07/init.sh ]]; then
   cd $old_dir
 fi
 
+if [[ ! -e ./chap05/tools ]]; then
+  old_dir=`pwd`
+  cd ./chap05
+  ln -s ../tools tools
+  cd $old_dir
+fi
+
+
+if [[ ! -e ./chap05/openstacksource ]]; then
+  old_dir=`pwd`
+  cd ./chap05
+  ln -s ../packages/source/ openstacksource
+  cd $old_dir
+fi
+
+
 cd $cmd_old_dir
 set +o xtrace
